@@ -1,0 +1,48 @@
+### OS ###
+.DS_Store
+**/.DS_Store
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+
+### VS Code ###
+.vscode/*
+!.vscode/extensions.json
+
+### Environment / Secrets ###
+.env
+*.pem
+*.key
+
+### Spring Boot / Maven ###
+/target/
+
+### Spring Boot Config ###
+src/main/resources/application-*.yml
+src/main/resources/application-*.properties
+
+### React / Vite ###
+package-lock.json
+mobileorder-react/package-lock.json
+mobileorder-react/.vite/
+mobileorder-react/dist/
+mobileorder-react/dist-ssr/
+mobileorder-react/node_modules/
+*.local
+
+### Logs ###
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+### Editor Files ###
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
