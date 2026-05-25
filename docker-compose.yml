@@ -1,0 +1,17 @@
+services:
+  db:
+    container_name: ${DB_CONTAINER_NAME}
+    image: mysql:8.4
+    volumes:
+      - database-volume:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      TZ: Asia/Tokyo
+    ports:
+      - "${DB_PORT}:3306"
+
+volumes:
+  database-volume:
