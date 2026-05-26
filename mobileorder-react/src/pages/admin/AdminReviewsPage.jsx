@@ -36,11 +36,16 @@ export default function AdminReviewsPage({ reviews, onLoadReviews }) {
         <section className="review-list">
           {reviews.map((review) => (
             <article className="review-row" key={review.id}>
-              <div>
+              <div className="review-main">
                 <h2>{review.productName}</h2>
-                <p>注文番号: {review.orderNumber}</p>
-                <p>ユーザー名: {review.username}</p>
-                <p>{review.comment || 'コメントはありません。'}</p>
+                <div className="review-detail-list">
+                  <span>注文番号: {review.orderNumber}</span>
+                  <span>ユーザー名: {review.username}</span>
+                </div>
+                <p className="review-comment">
+                  <span>お客様の感想</span>
+                  {review.comment || 'コメントはありません。'}
+                </p>
               </div>
               <div className="review-meta">
                 <RatingStars rating={review.rating} />

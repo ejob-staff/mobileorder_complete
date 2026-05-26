@@ -20,7 +20,7 @@ function RatingInput({ value, onChange }) {
   )
 }
 
-export default function ReviewPage({ orders, reviews, onSubmitReview }) {
+export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm }) {
   const [forms, setForms] = useState({})
   const receivedOrders = orders.filter((order) => order.status === 'RECEIVED')
 
@@ -36,7 +36,14 @@ export default function ReviewPage({ orders, reviews, onSubmitReview }) {
   const submit = async (order, item) => {
     const key = formKey(order.id, item.productId)
     const form = forms[key] || { rating: 5, comment: '' }
-    await onSubmitReview({ orderNumber: order.id, productId: item.productId, rating: form.rating, comment: form.comment })
+    onConfirm({
+      title: '評価を登録しますか？',
+      message: '登録した評価と感想は店舗の管理者が確認します。内容を確認してから登録してください。',
+      confirmText: '登録する',
+      onConfirm: async () => {
+        await onSubmitReview({ orderNumber: order.id, productId: item.productId, rating: form.rating, comment: form.comment })
+      },
+    })
   }
 
   return (

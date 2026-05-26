@@ -34,13 +34,43 @@ function UserManagementCodeList({ codes }) {
   )
 }
 
-export default function UserManagementPage({ users, codes, initialTab, onChangeTab, onIssueUserCode, onStartAdminRegistration, onToggleUserStatus, onDeleteUser, onConfirm }) {
+const usernameSortValue = (username) => {
+  const match = username.match(/^([a-zA-Z]+)(\d*)$/)
+  if (!match) {
+    return { prefix: username, number: 0 }
+  }
+
+  return {
+    prefix: match[1],
+    number: match[2] ? Number(match[2]) : 1,
+  }
+}
+
+const sortUsers = (users) => {
+  return [...users].sort((a, b) => {
+    const roleOrder = (b.role === '管理者ユーザー' ? 1 : 0) - (a.role === '管理者ユーザー' ? 1 : 0)
+    if (roleOrder !== 0) {
+      return roleOrder
+    }
+
+    const current = usernameSortValue(a.username)
+    const next = usernameSortValue(b.username)
+    const prefixOrder = current.prefix.localeCompare(next.prefix)
+    if (prefixOrder !== 0) {
+      return prefixOrder
+    }
+
+    return current.number - next.number
+  })
+}
+
+export default function UserManagementPage({ users, codes, currentUsername, initialTab, onChangeTab, onIssueUserCode, onStartAdminRegistration, onToggleUserStatus, onDeleteUser, onConfirm }) {
   const [activeTab, setActiveTab] = useState(initialTab)
   const [issuedCode, setIssuedCode] = useState('')
   const [userFilter, setUserFilter] = useState('all')
   const userCodes = codes.filter((code) => code.code.startsWith('USER-CODE-'))
   const adminCodes = codes.filter((code) => code.code.startsWith('ADMIN-CODE-'))
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = sortUsers(users.filter((user) => {
     if (userFilter === 'general') {
       return user.role === '一般ユーザー'
     }
@@ -50,7 +80,7 @@ export default function UserManagementPage({ users, codes, initialTab, onChangeT
     }
 
     return true
-  })
+  }))
 
   useEffect(() => {
     setActiveTab(initialTab)
@@ -105,7 +135,7 @@ export default function UserManagementPage({ users, codes, initialTab, onChangeT
 
       {activeTab === 'users' && (
         <section className="management-section">
-                    <h2>ユーザー一覧</h2>
+          <h2>ユーザー一覧</h2>
           <div className="category-tabs user-filter-tabs">
             <button className={userFilter === 'all' ? 'active' : ''} type="button" onClick={() => setUserFilter('all')}>
               すべて
@@ -120,6 +150,7 @@ export default function UserManagementPage({ users, codes, initialTab, onChangeT
           <div className="admin-list">
             {filteredUsers.map((user) => {
               const isAdminUser = user.role === '管理者ユーザー'
+              const isCurrentUser = user.username === currentUsername
 
               return (
                 <article className="admin-product user-card" key={user.id}>
@@ -137,7 +168,7 @@ export default function UserManagementPage({ users, codes, initialTab, onChangeT
                       <button className="ghost-button" type="button" disabled={isAdminUser} onClick={() => onToggleUserStatus(user.id)}>
                         {user.enabled ? '利用停止' : '利用再開'}
                       </button>
-                      <button className="danger-button" type="button" onClick={() => deleteUser(user)}>
+                      <button className="danger-button" type="button" disabled={isCurrentUser} onClick={() => deleteUser(user)}>
                         削除
                       </button>
                     </div>

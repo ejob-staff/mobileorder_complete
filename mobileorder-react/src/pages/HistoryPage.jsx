@@ -88,8 +88,10 @@ export default function HistoryPage({ orders }) {
             >
               <div>
                 <h2>注文番号: {order.id}</h2>
-                <p>注文日時: {order.createdAt}</p>
-                <p>受け取り日時: {order.pickupAt}</p>
+                <div className="order-meta-list">
+                  <span>注文日時: {order.createdAt}</span>
+                  <span>受け取り日時: {order.pickupAt}</span>
+                </div>
                 <span className={`order-badge ${order.status.toLowerCase()}`}>{order.statusLabel}</span>
               </div>
               <ul>

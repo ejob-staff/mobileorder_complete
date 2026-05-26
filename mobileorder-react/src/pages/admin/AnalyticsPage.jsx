@@ -40,6 +40,103 @@ const pentagonPoints = (score) => {
   }).join(' ')
 }
 
+const average = (values) => {
+  if (values.length === 0) {
+    return 0
+  }
+
+  return values.reduce((sum, value) => sum + value, 0) / values.length
+}
+
+const categoryAverage = (score) => {
+  return average(pentagonMetrics.map((metric) => score[metric.key] || 0))
+}
+
+const evaluateSalesTrend = (dailySales) => {
+  if (!dailySales || dailySales.length === 0) {
+    return {
+      score: 50,
+      label: 'データ待ち',
+      description: '売上推移のデータが増えると、傾向を評価できます。',
+    }
+  }
+
+  const sales = dailySales.map((item) => item.sales)
+  const midpoint = Math.max(1, Math.floor(sales.length / 2))
+  const firstAverage = average(sales.slice(0, midpoint))
+  const recentAverage = average(sales.slice(midpoint).length > 0 ? sales.slice(midpoint) : sales)
+  const baseline = Math.max(firstAverage, 1)
+  const growthRate = (recentAverage - firstAverage) / baseline
+  const maxSales = Math.max(...sales, 1)
+  const volatility = (Math.max(...sales) - Math.min(...sales)) / maxSales
+  const growthScore = Math.max(0, Math.min(100, 60 + growthRate * 120))
+  const stabilityScore = Math.max(0, 100 - volatility * 45)
+  const score = Math.round(growthScore * 0.7 + stabilityScore * 0.3)
+
+  if (growthRate > 0.12) {
+    return {
+      score,
+      label: '上向き',
+      description: '直近の売上平均が前半より伸びていて、注文の勢いが出ています。',
+    }
+  }
+
+  if (growthRate < -0.12) {
+    return {
+      score,
+      label: '減少傾向',
+      description: '直近の売上平均が前半より下がっています。おすすめ表示やカテゴリ訴求の見直し余地があります。',
+    }
+  }
+
+  return {
+    score,
+    label: volatility > 0.55 ? '変動あり' : '安定',
+    description: volatility > 0.55
+      ? '売上の上下がやや大きく、日ごとの注文差が出ています。'
+      : '売上は大きく崩れず、安定した推移です。',
+  }
+}
+
+const buildOverallEvaluation = (analytics) => {
+  const salesTrend = evaluateSalesTrend(analytics.dailySales)
+  const categoryScores = analytics.categoryScores || []
+  const rankedCategories = [...categoryScores].sort((a, b) => categoryAverage(b) - categoryAverage(a))
+  const strongest = rankedCategories[0]
+  const weakest = rankedCategories[rankedCategories.length - 1]
+  const categoryScore = Math.round(average(categoryScores.map(categoryAverage)))
+  const salesPowerScore = Math.round(average(categoryScores.map((score) => score.salesPower || 0)))
+  const orderVolumeScore = Math.round(average(categoryScores.map((score) => score.orderVolume || 0)))
+  const onTimeScore = Math.round(average(categoryScores.map((score) => score.onTimeRate || 0)))
+  const repeatScore = Math.round(average(categoryScores.map((score) => score.repeatPotential || 0)))
+  const ratingScore = Math.round(Math.min(100, (analytics.averageRating / 5) * 100))
+  const totalScore = Math.round(salesTrend.score * 0.4 + categoryScore * 0.4 + repeatScore * 0.1 + ratingScore * 0.1)
+  const status = totalScore >= 80 ? '好調キープ' : totalScore >= 65 ? '安定運用' : totalScore >= 50 ? '改善チャンス' : '重点改善'
+  const statusClass = totalScore >= 80 ? 'excellent' : totalScore >= 65 ? 'stable' : totalScore >= 50 ? 'chance' : 'urgent'
+
+  const strength = strongest
+    ? `${strongest.category}はカテゴリ総合が高く、売上や注文の柱になっています。`
+    : 'カテゴリ別データが増えると、強みカテゴリを評価できます。'
+  const improvement = weakest
+    ? `${weakest.category}は伸ばせる余地があります。評価と注文数の差を見ながら、商品構成や販売タイミングを見直す候補にできます。`
+    : 'カテゴリ別の比較データがまだ不足しています。'
+
+  return {
+    totalScore,
+    status,
+    statusClass,
+    salesTrend,
+    categoryScore,
+    salesPowerScore,
+    orderVolumeScore,
+    onTimeScore,
+    repeatScore,
+    ratingScore,
+    strength,
+    improvement,
+  }
+}
+
 export default function AnalyticsPage({ analytics }) {
   if (!analytics) {
     return (
@@ -48,6 +145,7 @@ export default function AnalyticsPage({ analytics }) {
       </main>
     )
   }
+  const evaluation = buildOverallEvaluation(analytics)
 
   return (
     <main className="container admin-layout">
@@ -70,6 +168,60 @@ export default function AnalyticsPage({ analytics }) {
           <span>平均評価</span>
           <strong>{analytics.averageRating.toFixed(1)}</strong>
         </article>
+      </section>
+
+      <section className="analytics-panel evaluation-panel">
+        <div className="evaluation-card-head">
+          <div>
+            <h2>総合インサイト</h2>
+          </div>
+        </div>
+        <div className="evaluation-highlight-grid">
+          <article className={`condition-card ${evaluation.statusClass}`}>
+            <span>店舗コンディション</span>
+            <strong>{evaluation.status}</strong>
+          </article>
+          <article>
+            <span>全体スコア</span>
+            <strong>{evaluation.totalScore}<small>/100</small></strong>
+          </article>
+        </div>
+        <div className="evaluation-grid">
+          <article>
+            <span>売上力</span>
+            <strong>{evaluation.salesPowerScore}<small>/100</small></strong>
+          </article>
+          <article>
+            <span>注文数</span>
+            <strong>{evaluation.orderVolumeScore}<small>/100</small></strong>
+          </article>
+          <article>
+            <span>提供時間</span>
+            <strong>{evaluation.onTimeScore}<small>/100</small></strong>
+          </article>
+          <article>
+            <span>お客様評価</span>
+            <strong>{evaluation.ratingScore}<small>/100</small></strong>
+          </article>
+          <article>
+            <span>リピート期待</span>
+            <strong>{evaluation.repeatScore}<small>/100</small></strong>
+          </article>
+        </div>
+        <div className="evaluation-notes">
+          <article>
+            <h3>分析コメント</h3>
+            <p>{evaluation.salesTrend.description}</p>
+          </article>
+          <article>
+            <h3>全体評価</h3>
+            <p>{evaluation.strength}</p>
+          </article>
+          <article>
+            <h3>カテゴリ別評価</h3>
+            <p>{evaluation.improvement}</p>
+          </article>
+        </div>
       </section>
 
       <section className="analytics-panel">
@@ -103,7 +255,12 @@ export default function AnalyticsPage({ analytics }) {
                   const point = pentagonVertex(index, 80)
                   return (
                     <text className="pentagon-label" x={point.x} y={point.y} textAnchor="middle" dominantBaseline="middle" key={metric.key}>
-                      {metric.label}
+                      {metric.key === 'repeatPotential' ? (
+                        <>
+                          <tspan x={point.x} dy="-0.45em">リピート</tspan>
+                          <tspan x={point.x} dy="1.1em">期待</tspan>
+                        </>
+                      ) : metric.label}
                     </text>
                   )
                 })}

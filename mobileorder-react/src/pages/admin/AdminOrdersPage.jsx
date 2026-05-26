@@ -145,9 +145,11 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
                 <div className="order-status-head">
                   <div>
                     <h2>注文番号: {order.id}</h2>
-                    <p>注文日時: {order.createdAt}</p>
-                    <p>受取日時: {order.pickupAt}</p>
-                    <p>お客様のユーザー名: {order.username}</p>
+                    <div className="order-meta-list">
+                      <span>注文日時: {order.createdAt}</span>
+                      <span>受取日時: {order.pickupAt}</span>
+                      <span>お客様のユーザー名: {order.username}</span>
+                    </div>
                   </div>
                   <span className={`order-badge ${order.status.toLowerCase()}`}>{order.statusLabel}</span>
                 </div>

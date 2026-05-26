@@ -391,6 +391,7 @@ function App() {
       <UserManagementPage
         users={users}
         codes={managementCodes}
+        currentUsername={auth.username}
         onIssueUserCode={issueUserManagementCode}
         initialTab={userManagementTab}
         onChangeTab={setUserManagementTab}
@@ -426,7 +427,7 @@ function App() {
   } else if (route === '/history') {
     page = isUser ? <HistoryPage orders={orders} /> : <AccessDeniedPage onNavigate={navigate} />
   } else if (route === '/reviews') {
-    page = isUser ? <ReviewPage orders={orders} reviews={reviews} onSubmitReview={submitReview} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isUser ? <ReviewPage orders={orders} reviews={reviews} onSubmitReview={submitReview} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} />
   } else if (route === '/account') {
     page = <AccountPage account={account} onUpdateAccount={updateAccount} onConfirm={showConfirm} />
   } else {

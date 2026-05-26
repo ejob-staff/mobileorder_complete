@@ -26,17 +26,16 @@ const roundUpToNextTenMinutes = (date) => {
   const rounded = new Date(date)
   rounded.setSeconds(0, 0)
   const remainder = rounded.getMinutes() % 10
-
-  if (remainder !== 0) {
-    rounded.setMinutes(rounded.getMinutes() + 10 - remainder)
-  }
+  const minutesToAdd = remainder === 0 ? 10 : 10 - remainder
+  rounded.setMinutes(rounded.getMinutes() + minutesToAdd)
 
   return rounded
 }
 
 const buildPickupOptions = () => {
-  const start = roundUpToNextTenMinutes(new Date())
-  const end = new Date(Date.now() + 4 * 60 * 60 * 1000)
+  const now = new Date()
+  const start = roundUpToNextTenMinutes(now)
+  const end = new Date(now.getTime() + 4 * 60 * 60 * 1000)
   end.setSeconds(0, 0)
 
   const slots = []
@@ -62,8 +61,11 @@ export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onS
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const { dateOptions, slots } = useMemo(() => buildPickupOptions(), [])
   const [selectedDate, setSelectedDate] = useState(dateOptions[0]?.value || '')
-  const [selectedTime, setSelectedTime] = useState('')
-  const timeOptions = slots.filter((slot) => slot.dateValue === selectedDate)
+  const [selectedTime, setSelectedTime] = useState(slots[0]?.timeValue || '')
+  const timeOptions = useMemo(
+    () => slots.filter((slot) => slot.dateValue === selectedDate),
+    [selectedDate, slots],
+  )
   const pickupAt = selectedDate && selectedTime ? `${selectedDate}T${selectedTime}` : ''
 
   useEffect(() => {
@@ -108,7 +110,12 @@ export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onS
         <div className="pickup-selects">
           <label>
             受け取り日
-            <select value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} required>
+            <select
+              value={selectedDate}
+              onChange={(event) => setSelectedDate(event.target.value)}
+              disabled={dateOptions.length <= 1}
+              required
+            >
               {dateOptions.map((date) => (
                 <option value={date.value} key={date.value}>{date.label}</option>
               ))}

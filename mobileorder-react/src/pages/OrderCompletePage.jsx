@@ -2,7 +2,7 @@ export default function OrderCompletePage({ latestOrder, onNavigate }) {
   return (
     <main className="container narrow completion">
       <p className="eyebrow">Complete</p>
-      <h1>注文が完了しました。</h1>
+      <h1>注文完了</h1>
 
       {latestOrder ? (
         <section className="complete-summary">

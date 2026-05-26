@@ -89,7 +89,7 @@ export default function ProductFormPage({ mode, product, onSubmit, onNavigate })
               <option>焼き菓子</option>
               <option>タピオカ</option>
               <option>ドリンク</option>
-              <option>その他</option>
+              <option>プレミアム</option>
             </select>
           </label>
 

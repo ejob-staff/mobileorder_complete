@@ -2,6 +2,7 @@ package jp.co.mobileorder.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import jp.co.mobileorder.dto.OrderRequest;
 import jp.co.mobileorder.dto.OrderResponse;
 import jp.co.mobileorder.dto.OrderStatusUpdateRequest;
@@ -25,7 +26,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse createOrder(String username, OrderRequest request) {
-        var orderNumber = "MOBILE-CODE-" + System.currentTimeMillis() % 1_000_000;
+        var orderNumber = generateOrderNumber();
         var now = LocalDateTime.now();
         var pickupAt = LocalDateTime.parse(request.pickupAt());
         if (pickupAt.isBefore(now) || pickupAt.isAfter(now.plusHours(4))) {
@@ -103,5 +104,14 @@ public class OrderService {
             throw new IllegalArgumentException("対象の注文が見つかりません。");
         }
         return order;
+    }
+
+    private String generateOrderNumber() {
+        String orderNumber;
+        do {
+            orderNumber = "MOBILE-CODE-" + String.format("%06d", ThreadLocalRandom.current().nextInt(1_000_000));
+        } while (mobileOrderRepository.findByOrderNumber(orderNumber) != null);
+
+        return orderNumber;
     }
 }

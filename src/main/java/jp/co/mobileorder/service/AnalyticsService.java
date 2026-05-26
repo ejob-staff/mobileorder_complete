@@ -68,6 +68,9 @@ public class AnalyticsService {
     }
 
     private String guessCategory(String productName) {
+        if (productName.contains("プレミアム")) {
+            return "プレミアム";
+        }
         if (productName.contains("タピオカ")) {
             return "タピオカ";
         }
@@ -83,6 +86,6 @@ public class AnalyticsService {
         if (productName.contains("ラテ") || productName.contains("ティー")) {
             return "ドリンク";
         }
-        return "その他";
+        return "プレミアム";
     }
 }

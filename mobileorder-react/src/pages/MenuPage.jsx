@@ -5,8 +5,8 @@ import RatingStars from '../components/RatingStars.jsx'
 export default function MenuPage({ products, cart, onAddToCart, onNavigate }) {
   const [category, setCategory] = useState('すべて')
   const [selectedProduct, setSelectedProduct] = useState(null)
-  const categoryOrder = ['季節限定', 'ケーキ', '焼き菓子', 'タピオカ', 'ドリンク', 'その他']
-  const categories = ['すべて', ...categoryOrder.filter((currentCategory) => products.some((product) => product.category === currentCategory))]
+  const categoryOrder = ['季節限定', 'ケーキ', '焼き菓子', 'タピオカ', 'ドリンク', 'プレミアム']
+  const categories = ['すべて', ...categoryOrder]
   const visibleProducts = products.filter((product) => category === 'すべて' || product.category === category)
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
   const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0)
@@ -34,9 +34,13 @@ export default function MenuPage({ products, cart, onAddToCart, onNavigate }) {
         ))}
       </div>
 
-      <section className="menu-grid">
-        {visibleProducts.map((product) => <MenuCard product={product} onSelect={setSelectedProduct} key={product.id} />)}
-      </section>
+      {visibleProducts.length === 0 ? (
+        <p className="empty">「{category}」の商品はまだありません。</p>
+      ) : (
+        <section className="menu-grid">
+          {visibleProducts.map((product) => <MenuCard product={product} onSelect={setSelectedProduct} key={product.id} />)}
+        </section>
+      )}
 
       {cartCount > 0 && (
         <aside className="cart-bar">
