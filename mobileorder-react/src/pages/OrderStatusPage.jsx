@@ -16,7 +16,6 @@ export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
           <h1>注文状況</h1>
           <p>現在注文している商品の準備状況を確認できます。</p>
         </div>
-        <button className="ghost-button" type="button" onClick={onReload}>再読み込み</button>
       </section>
 
       {orders.length === 0 ? (
