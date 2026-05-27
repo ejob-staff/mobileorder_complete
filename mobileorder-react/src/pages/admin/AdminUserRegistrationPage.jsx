@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default function AdminUserRegistrationPage({ managementCode, onSubmit, onNavigate }) {
+export default function AdminUserRegistrationPage({ managementCode, onSubmit, onCancel, onConfirm }) {
   const [form, setForm] = useState({
     code: managementCode,
     username: '',
@@ -27,6 +27,15 @@ export default function AdminUserRegistrationPage({ managementCode, onSubmit, on
     } catch (currentError) {
       setError(currentError.message)
     }
+  }
+
+  const cancelRegistration = () => {
+    onConfirm({
+      title: 'ユーザー登録中断確認',
+      message: '編集中の内容はクリアされ、発行済みの管理者ユーザー用管理番号は破棄されます。よろしいですか？',
+      confirmText: '戻る',
+      onConfirm: onCancel,
+    })
   }
 
   return (
@@ -62,7 +71,7 @@ export default function AdminUserRegistrationPage({ managementCode, onSubmit, on
 
         <div className="form-actions">
           <button type="submit">登録する</button>
-          <button className="ghost-button" type="button" onClick={() => onNavigate('/admin/users')}>戻る</button>
+          <button className="ghost-button" type="button" onClick={cancelRegistration}>戻る</button>
         </div>
       </form>
     </main>

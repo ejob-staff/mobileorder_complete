@@ -4,10 +4,23 @@ import RatingStars from '../components/RatingStars.jsx'
 
 export default function MenuPage({ products, cart, onAddToCart, onNavigate }) {
   const [category, setCategory] = useState('すべて')
+  const [searchText, setSearchText] = useState('')
   const [selectedProduct, setSelectedProduct] = useState(null)
   const categoryOrder = ['季節限定', 'ケーキ', '焼き菓子', 'タピオカ', 'ドリンク', 'プレミアム']
   const categories = ['すべて', ...categoryOrder]
-  const visibleProducts = products.filter((product) => category === 'すべて' || product.category === category)
+  const normalizedSearchText = searchText.trim().toLowerCase()
+  const visibleProducts = products.filter((product) => {
+    const matchesCategory = category === 'すべて' || product.category === category
+    const matchesSearch = normalizedSearchText === ''
+      || product.name.toLowerCase().includes(normalizedSearchText)
+      || product.category.toLowerCase().includes(normalizedSearchText)
+      || product.description.toLowerCase().includes(normalizedSearchText)
+
+    return matchesCategory && matchesSearch
+  })
+  const emptyMessage = normalizedSearchText
+    ? '条件に一致する商品はありません。'
+    : `「${category}」の商品はまだありません。`
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
   const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0)
 
@@ -26,6 +39,11 @@ export default function MenuPage({ products, cart, onAddToCart, onNavigate }) {
         </div>
       </section>
 
+      <label className="search-field">
+        商品検索
+        <input value={searchText} onChange={(event) => setSearchText(event.target.value)} placeholder="商品名・カテゴリ・説明文で検索" />
+      </label>
+
       <div className="category-tabs">
         {categories.map((currentCategory) => (
           <button className={category === currentCategory ? 'active' : ''} type="button" key={currentCategory} onClick={() => setCategory(currentCategory)}>
@@ -35,7 +53,7 @@ export default function MenuPage({ products, cart, onAddToCart, onNavigate }) {
       </div>
 
       {visibleProducts.length === 0 ? (
-        <p className="empty">「{category}」の商品はまだありません。</p>
+        <p className="empty">{emptyMessage}</p>
       ) : (
         <section className="menu-grid">
           {visibleProducts.map((product) => <MenuCard product={product} onSelect={setSelectedProduct} key={product.id} />)}

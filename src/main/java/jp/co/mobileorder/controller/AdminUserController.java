@@ -63,4 +63,10 @@ public class AdminUserController {
     public UserManagementCodeResponse issueAdminCode() {
         return adminUserService.issueAdminCode();
     }
+
+    @DeleteMapping("/user-management-codes/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUnusedCode(@PathVariable Long id) {
+        adminUserService.deleteUnusedCode(id);
+    }
 }

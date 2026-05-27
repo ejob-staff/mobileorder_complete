@@ -3,9 +3,22 @@ import ProductVisual from '../../components/ProductVisual.jsx'
 
 export default function AdminProductsPage({ products, onDelete, onTogglePublished, onNavigate, onEdit, onConfirm }) {
   const [category, setCategory] = useState('すべて')
+  const [searchText, setSearchText] = useState('')
   const categoryOrder = ['季節限定', 'ケーキ', '焼き菓子', 'タピオカ', 'ドリンク', 'プレミアム']
   const categories = ['すべて', ...categoryOrder]
-  const visibleProducts = products.filter((product) => category === 'すべて' || product.category === category)
+  const normalizedSearchText = searchText.trim().toLowerCase()
+  const visibleProducts = products.filter((product) => {
+    const matchesCategory = category === 'すべて' || product.category === category
+    const matchesSearch = normalizedSearchText === ''
+      || product.name.toLowerCase().includes(normalizedSearchText)
+      || product.category.toLowerCase().includes(normalizedSearchText)
+      || product.description.toLowerCase().includes(normalizedSearchText)
+
+    return matchesCategory && matchesSearch
+  })
+  const emptyMessage = normalizedSearchText
+    ? '条件に一致する商品はありません。'
+    : `「${category}」カテゴリの商品はまだ登録されていません。`
 
   const deleteProduct = (product) => {
     onConfirm({
@@ -28,6 +41,11 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
         <button type="button" onClick={() => onNavigate('/admin/products/new')}>商品を登録する</button>
       </section>
 
+      <label className="search-field">
+        商品検索
+        <input value={searchText} onChange={(event) => setSearchText(event.target.value)} placeholder="商品名・カテゴリ・説明文で検索" />
+      </label>
+
       <div className="category-tabs">
         {categories.map((currentCategory) => (
           <button className={category === currentCategory ? 'active' : ''} type="button" key={currentCategory} onClick={() => setCategory(currentCategory)}>
@@ -37,7 +55,7 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
       </div>
 
       {visibleProducts.length === 0 ? (
-        <p className="empty">「{category}」カテゴリの商品はまだ登録されていません。</p>
+        <p className="empty">{emptyMessage}</p>
       ) : (
         <section className="admin-list">
           {visibleProducts.map((product) => (

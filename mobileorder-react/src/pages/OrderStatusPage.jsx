@@ -46,7 +46,7 @@ export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
               )}
 
               <ul className="order-items">
-                {order.items.map((item) => <li key={item.id}>{item.name} x {item.quantity}</li>)}
+                {order.items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
               </ul>
 
               <div className="total-row">

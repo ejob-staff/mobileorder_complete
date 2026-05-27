@@ -539,6 +539,20 @@ label {
   background: #f4ddff;
 }
 
+.search-field {
+  display: grid;
+  gap: 8px;
+  max-width: 520px;
+  margin: 0 0 18px;
+  color: #563768;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.search-field input {
+  min-height: 44px;
+}
+
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

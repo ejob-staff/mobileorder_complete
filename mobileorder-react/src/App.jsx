@@ -37,6 +37,7 @@ function App() {
   const [users, setUsers] = useState([])
   const [managementCodes, setManagementCodes] = useState([])
   const [adminRegistrationCode, setAdminRegistrationCode] = useState('')
+  const [adminRegistrationCodeId, setAdminRegistrationCodeId] = useState(null)
   const [userManagementTab, setUserManagementTab] = useState('users')
   const [latestOrder, setLatestOrder] = useState(null)
   const [message, setMessage] = useState('')
@@ -264,6 +265,7 @@ function App() {
     const created = await apiRequest('/api/admin/user-management-codes/admin', { method: 'POST' })
     setManagementCodes((current) => [created, ...current])
     setAdminRegistrationCode(created.code)
+    setAdminRegistrationCodeId(created.id)
     setUserManagementTab('adminCodes')
     navigate('/admin/users/admin/new')
   }
@@ -272,6 +274,19 @@ function App() {
     const created = await apiRequest('/api/admin/users/admin', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(form) })
     setUsers((current) => [created, ...current])
     await loadManagementCodes()
+    setAdminRegistrationCode('')
+    setAdminRegistrationCodeId(null)
+    setUserManagementTab('adminCodes')
+    navigate('/admin/users')
+  }
+
+  const cancelAdminRegistration = async () => {
+    if (adminRegistrationCodeId) {
+      await apiRequest(`/api/admin/user-management-codes/${adminRegistrationCodeId}`, { method: 'DELETE' })
+      setManagementCodes((current) => current.filter((code) => code.id !== adminRegistrationCodeId))
+    }
+    setAdminRegistrationCode('')
+    setAdminRegistrationCodeId(null)
     setUserManagementTab('adminCodes')
     navigate('/admin/users')
   }
@@ -406,10 +421,8 @@ function App() {
       <AdminUserRegistrationPage
         managementCode={adminRegistrationCode}
         onSubmit={createAdminUser}
-        onNavigate={(nextRoute) => {
-          setUserManagementTab('adminCodes')
-          navigate(nextRoute)
-        }}
+        onCancel={cancelAdminRegistration}
+        onConfirm={showConfirm}
       />
     ) : <AccessDeniedPage onNavigate={navigate} />
   } else if (route === '/admin/products/new') {

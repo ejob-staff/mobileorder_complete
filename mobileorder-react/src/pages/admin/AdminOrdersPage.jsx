@@ -161,7 +161,7 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
                 <section className="ordered-products">
                   <h3>注文された商品</h3>
                   <ul className="order-items">
-                    {order.items.map((item) => <li key={item.id}>{item.name} x {item.quantity}</li>)}
+                    {order.items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
                   </ul>
                 </section>
 

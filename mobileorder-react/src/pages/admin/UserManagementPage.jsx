@@ -129,7 +129,7 @@ export default function UserManagementPage({ users, codes, currentUsername, init
           一般ユーザー用管理番号一覧
         </button>
         <button className={activeTab === 'adminCodes' ? 'active' : ''} type="button" onClick={() => changeTab('adminCodes')}>
-          管理者用管理番号一覧
+          管理者ユーザー用管理番号一覧
         </button>
       </div>
 

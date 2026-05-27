@@ -102,6 +102,16 @@ public class AdminUserService {
         appUserRepository.delete(user);
     }
 
+    @Transactional
+    public void deleteUnusedCode(Long id) {
+        var code = userManagementCodeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("ユーザー管理番号が見つかりません。"));
+        if (code.isUsed()) {
+            throw new IllegalArgumentException("使用済みのユーザー管理番号は削除できません。");
+        }
+        userManagementCodeRepository.delete(code);
+    }
+
     private UserManagementCodeResponse issueCode(String prefix) {
         var code = new UserManagementCode(generateCode(prefix));
         return UserManagementCodeResponse.from(userManagementCodeRepository.save(code));

@@ -38,7 +38,7 @@ function OrderDetailModal({ order, onClose }) {
         <section>
           <h3>商品一覧</h3>
           <ul className="order-items">
-            {order.items.map((item) => <li key={item.id}>{item.name} x {item.quantity}</li>)}
+            {order.items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
           </ul>
         </section>
 
@@ -95,7 +95,7 @@ export default function HistoryPage({ orders }) {
                 <span className={`order-badge ${order.status.toLowerCase()}`}>{order.statusLabel}</span>
               </div>
               <ul>
-                {order.items.map((item) => <li key={item.id}>{item.name} x {item.quantity}</li>)}
+                {order.items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
               </ul>
               <strong>¥{order.total.toLocaleString()}</strong>
 
