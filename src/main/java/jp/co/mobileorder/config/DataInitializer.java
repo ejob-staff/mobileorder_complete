@@ -27,6 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class DataInitializer {
     private static final String ORDER_NUMBER_PREFIX = "MOBILE-CODE-";
+    private static final String USER_CODE_PREFIX = "USER-CODE-";
+    private static final String ADMIN_CODE_PREFIX = "ADMIN-CODE-";
+    private static final String MANAGEMENT_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     private static final Random RANDOM = new Random();
 
     @Bean
@@ -53,28 +56,29 @@ public class DataInitializer {
 
             if (userManagementCodeRepository.count() == 0) {
                 appUserRepository.findAll().forEach(AppUser::enable);
+                var sampleManagementCodes = new HashSet<String>();
 
-                var userCode = new UserManagementCode("USER-CODE-BF92KDLS7QWE");
+                var userCode = new UserManagementCode(generateSampleManagementCode(USER_CODE_PREFIX, sampleManagementCodes));
                 userCode.markUsed("user");
                 userManagementCodeRepository.save(userCode);
 
-                var user2Code = new UserManagementCode("USER-CODE-HK7PQM4N8DRA");
+                var user2Code = new UserManagementCode(generateSampleManagementCode(USER_CODE_PREFIX, sampleManagementCodes));
                 user2Code.markUsed("user2");
                 userManagementCodeRepository.save(user2Code);
 
-                var user3Code = new UserManagementCode("USER-CODE-MN6RTK8V3PQA");
+                var user3Code = new UserManagementCode(generateSampleManagementCode(USER_CODE_PREFIX, sampleManagementCodes));
                 user3Code.markUsed("user3");
                 userManagementCodeRepository.save(user3Code);
 
-                var user4Code = new UserManagementCode("USER-CODE-VD5QK9TR2HMA");
+                var user4Code = new UserManagementCode(generateSampleManagementCode(USER_CODE_PREFIX, sampleManagementCodes));
                 user4Code.markUsed("user4");
                 userManagementCodeRepository.save(user4Code);
 
-                var adminCode = new UserManagementCode("ADMIN-CODE-QW8XCV29PLKA");
+                var adminCode = new UserManagementCode(generateSampleManagementCode(ADMIN_CODE_PREFIX, sampleManagementCodes));
                 adminCode.markUsed("admin");
                 userManagementCodeRepository.save(adminCode);
 
-                var admin2Code = new UserManagementCode("ADMIN-CODE-NR7KQW5MPDTA");
+                var admin2Code = new UserManagementCode(generateSampleManagementCode(ADMIN_CODE_PREFIX, sampleManagementCodes));
                 admin2Code.markUsed("admin2");
                 userManagementCodeRepository.save(admin2Code);
             }
@@ -206,6 +210,19 @@ public class DataInitializer {
         } while (!usedOrderNumbers.add(orderNumber));
 
         return orderNumber;
+    }
+
+    private static String generateSampleManagementCode(String prefix, Set<String> usedManagementCodes) {
+        String managementCode;
+        do {
+            var builder = new StringBuilder(prefix);
+            for (int i = 0; i < 12; i++) {
+                builder.append(MANAGEMENT_CODE_CHARS.charAt(RANDOM.nextInt(MANAGEMENT_CODE_CHARS.length())));
+            }
+            managementCode = builder.toString();
+        } while (!usedManagementCodes.add(managementCode));
+
+        return managementCode;
     }
 
     private static String orderNumberAt(List<String> orderNumbers, int index) {

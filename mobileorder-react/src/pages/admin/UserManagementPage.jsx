@@ -94,7 +94,7 @@ export default function UserManagementPage({ users, codes, currentUsername, init
   const issueUserCode = () => {
     onConfirm({
       title: 'ユーザー管理番号発行の確認',
-      message: '一般ユーザー用のユーザー管理番号を作成します。ユーザー管理番号をランダムな文字列で発行しますが、よろしいですか？',
+      message: '一般ユーザー用のユーザー管理番号を作成します。ユーザー管理番号をランダムな英数字で発行しますが、よろしいですか？',
       confirmText: '発行する',
       onConfirm: async () => {
         const code = await onIssueUserCode()
