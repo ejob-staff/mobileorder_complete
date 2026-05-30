@@ -41,6 +41,7 @@ export default function AdminReviewsPage({ reviews, onLoadReviews }) {
                 <div className="review-detail-list">
                   <span>注文番号: {review.orderNumber}</span>
                   <span>ユーザー名: {review.username}</span>
+                  <span>評価: <RatingStars rating={review.rating} /></span>
                 </div>
                 <p className="review-comment">
                   <span>お客様の感想</span>
@@ -48,7 +49,6 @@ export default function AdminReviewsPage({ reviews, onLoadReviews }) {
                 </p>
               </div>
               <div className="review-meta">
-                <RatingStars rating={review.rating} />
                 <span>{review.createdAt}</span>
               </div>
             </article>

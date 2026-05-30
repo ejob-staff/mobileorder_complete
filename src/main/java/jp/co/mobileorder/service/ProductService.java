@@ -60,13 +60,13 @@ public class ProductService {
         var reviews = productReviewRepository.findByProductId(product.getId());
         var average = reviews.isEmpty() ? 0.0 : reviews.stream().mapToInt(review -> review.getRating()).average().orElse(0.0);
         var roundedAverage = Math.round(average * 10) / 10.0;
-        return ProductResponse.from(product, roundedAverage, (long) reviews.size());
+        return ProductResponse.from(product, roundedAverage, (long) reviews.size(), orderedQuantity(product.getId()));
     }
 
     private List<ProductResponse> sortByPopularity(List<ProductResponse> products) {
         return products.stream()
                 .sorted(Comparator
-                        .comparingInt((ProductResponse product) -> orderedQuantity(product.id())).reversed()
+                        .comparingInt(ProductResponse::orderedQuantity).reversed()
                         .thenComparing(ProductResponse::averageRating, Comparator.reverseOrder())
                         .thenComparing(ProductResponse::id, Comparator.reverseOrder()))
                 .toList();

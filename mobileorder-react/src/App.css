@@ -471,6 +471,39 @@ label {
   font-weight: 700;
 }
 
+.product-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(74px, 1fr));
+  gap: 6px;
+  max-width: 380px;
+  margin: 8px 0 12px;
+}
+
+.product-metrics span {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 46px;
+  padding: 6px 8px;
+  border: 1px solid #f0c6df;
+  border-radius: 8px;
+  background: #fffafe;
+}
+
+.product-metrics small {
+  justify-self: start;
+  color: #8a4b83;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.product-metrics strong {
+  align-self: end;
+  justify-self: end;
+  color: #3f164d;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
 .product-visual {
   position: relative;
   min-height: 112px;
@@ -779,6 +812,10 @@ label {
   .user-actions,
   .summary-row,
   .history-item {
+    grid-template-columns: 1fr;
+  }
+
+  .product-metrics {
     grid-template-columns: 1fr;
   }
 

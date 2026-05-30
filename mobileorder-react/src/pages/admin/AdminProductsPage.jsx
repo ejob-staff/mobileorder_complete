@@ -72,6 +72,20 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
                   <span>¥{product.price.toLocaleString()}</span>
                   <span>在庫 {product.stock}</span>
                 </div>
+                <div className="product-metrics" aria-label={`${product.name}の実績`}>
+                  <span>
+                    <small>評価</small>
+                    <strong>{Number(product.averageRating || 0).toFixed(1)}</strong>
+                  </span>
+                  <span>
+                    <small>レビュー</small>
+                    <strong>{product.reviewCount || 0}件</strong>
+                  </span>
+                  <span>
+                    <small>注文数</small>
+                    <strong>{product.orderedQuantity || 0}件</strong>
+                  </span>
+                </div>
                 <div className="item-actions">
                   <button className="ghost-button" type="button" onClick={() => onTogglePublished(product.id)}>
                     {product.published ? '非公開にする' : '公開する'}

@@ -12,13 +12,14 @@ public record ProductResponse(
         boolean published,
         String accent,
         Double averageRating,
-        Long reviewCount
+        Long reviewCount,
+        Integer orderedQuantity
 ) {
     public static ProductResponse from(Product product) {
-        return from(product, 0.0, 0L);
+        return from(product, 0.0, 0L, 0);
     }
 
-    public static ProductResponse from(Product product, Double averageRating, Long reviewCount) {
+    public static ProductResponse from(Product product, Double averageRating, Long reviewCount, Integer orderedQuantity) {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),
@@ -29,7 +30,8 @@ public record ProductResponse(
                 product.isPublished(),
                 product.getAccent(),
                 averageRating,
-                reviewCount
+                reviewCount,
+                orderedQuantity
         );
     }
 }
