@@ -431,6 +431,8 @@ function App() {
     const editingProductId = Number(route.replace('/admin/products/edit/', ''))
     const editingProduct = products.find((product) => product.id === editingProductId)
     page = isAdmin ? <ProductFormPage mode="edit" product={editingProduct} onSubmit={(product) => updateProduct(editingProductId, product)} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
+  } else if (route === '/menu') {
+    page = isUser ? <MenuPage products={products} cart={cart} onAddToCart={addToCart} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
   } else if (route === '/order-confirm') {
     page = isUser ? <ConfirmPage cart={cart} onChangeQuantity={changeQuantity} onRemove={removeFromCart} onSubmitOrder={submitOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
   } else if (route === '/order-complete') {
@@ -444,7 +446,7 @@ function App() {
   } else if (route === '/account') {
     page = <AccountPage account={account} onUpdateAccount={updateAccount} onConfirm={showConfirm} />
   } else {
-    page = isUser ? <MenuPage products={products} cart={cart} onAddToCart={addToCart} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = <AccessDeniedPage onNavigate={navigate} />
   }
 
   return (
