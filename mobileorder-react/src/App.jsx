@@ -166,7 +166,6 @@ function App() {
     }
   }
 
-
   const navigate = (nextRoute, options = {}) => {
     setMessage('')
     routerNavigate(nextRoute, options)
