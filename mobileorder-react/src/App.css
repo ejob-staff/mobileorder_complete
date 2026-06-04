@@ -2007,6 +2007,20 @@ textarea:focus {
   color: #7c3a72;
 }
 
+/*権限エラー画面 練習問題3-1-7-3*/
+.page-head .alert {
+  color: #ec4899;
+}
+
+/*共通ヘッダー 練習問題3-1-9-1*/
+.login-user-name.admin {
+  color: #f97316;
+}
+
+.login-user-name.user {
+  color: #2563eb;
+}
+
 .eyebrow {
   color: #db2777;
 }

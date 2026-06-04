@@ -48,7 +48,11 @@ export default function Header({ auth, route, onNavigate, onLogout }) {
         <button className="ghost-button" type="button" onClick={onLogout}>
           ログアウト
         </button>
-        <span className="login-status"><strong>{auth.username}</strong> でログイン中</span>
+        {/*共通ヘッダー 練習問題3-1-9-1*/}
+        <span className="login-status">
+          <strong className={`login-user-name ${auth.role}`}>{auth.username}</strong>
+          {' '}でログイン中
+        </span>
       </nav>
     </header>
   )

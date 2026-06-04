@@ -26,7 +26,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/orders/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/api/reviews/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/api/account").authenticated()
+                        //Spring Securityの基本設定 練習問題3-1-13-1
+                        .requestMatchers("/api/account").hasAuthority("ROLE_USER")
                         .anyRequest().permitAll()
                 )
                 .formLogin(login -> login

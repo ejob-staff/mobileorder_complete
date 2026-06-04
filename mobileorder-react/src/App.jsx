@@ -44,6 +44,10 @@ function App() {
   const [confirmModal, setConfirmModal] = useState(null)
   const isAdmin = auth?.role === 'admin'
   const isUser = auth?.role === 'user'
+  {/*権限エラー画面 練習問題3-1-7-1*/}
+  const accessDeniedHome = isAdmin
+    ? { homePath: '/admin/products', homeLabel: '商品管理へ戻る' }
+    : { homePath: '/menu', homeLabel: '商品選択へ戻る' }
 
   const loadAuth = async (redirect = true) => {
     const currentAuth = await apiRequest('/api/auth/status')
@@ -393,13 +397,13 @@ function App() {
         onEdit={(id) => navigate('/admin/products/edit/' + id)}
         onConfirm={showConfirm}
       />
-    ) : <AccessDeniedPage onNavigate={navigate} />
+    ) : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/admin/orders') {
-    page = isAdmin ? <AdminOrdersPage orders={orders} onUpdateStatus={updateOrderStatus} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isAdmin ? <AdminOrdersPage orders={orders} onUpdateStatus={updateOrderStatus} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/admin/reviews') {
-    page = isAdmin ? <AdminReviewsPage reviews={reviews} onLoadReviews={loadAdminReviews} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isAdmin ? <AdminReviewsPage reviews={reviews} onLoadReviews={loadAdminReviews} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/admin/analytics') {
-    page = isAdmin ? <AnalyticsPage analytics={analytics} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isAdmin ? <AnalyticsPage analytics={analytics} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/admin/users') {
     page = isAdmin ? (
       <UserManagementPage
@@ -414,7 +418,7 @@ function App() {
         onDeleteUser={deleteUser}
         onConfirm={showConfirm}
       />
-    ) : <AccessDeniedPage onNavigate={navigate} />
+    ) : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/admin/users/admin/new') {
     page = isAdmin ? (
       <AdminUserRegistrationPage
@@ -423,29 +427,30 @@ function App() {
         onCancel={cancelAdminRegistration}
         onConfirm={showConfirm}
       />
-    ) : <AccessDeniedPage onNavigate={navigate} />
+    ) : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/admin/products/new') {
-    page = isAdmin ? <ProductFormPage mode="create" onSubmit={createProduct} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isAdmin ? <ProductFormPage mode="create" onSubmit={createProduct} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route.startsWith('/admin/products/edit/')) {
     const editingProductId = Number(route.replace('/admin/products/edit/', ''))
     const editingProduct = products.find((product) => product.id === editingProductId)
-    page = isAdmin ? <ProductFormPage mode="edit" product={editingProduct} onSubmit={(product) => updateProduct(editingProductId, product)} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isAdmin ? <ProductFormPage mode="edit" product={editingProduct} onSubmit={(product) => updateProduct(editingProductId, product)} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/menu') {
-    page = isUser ? <MenuPage products={products} cart={cart} onAddToCart={addToCart} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isUser ? <MenuPage products={products} cart={cart} onAddToCart={addToCart} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-confirm') {
-    page = isUser ? <ConfirmPage cart={cart} onChangeQuantity={changeQuantity} onRemove={removeFromCart} onSubmitOrder={submitOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isUser ? <ConfirmPage cart={cart} onChangeQuantity={changeQuantity} onRemove={removeFromCart} onSubmitOrder={submitOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-complete') {
-    page = isUser ? <CompletePage latestOrder={latestOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isUser ? <CompletePage latestOrder={latestOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-status') {
-    page = isUser ? <OrderStatusPage orders={orders} onMarkReceived={markOrderReceived} onReload={loadActiveOrders} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isUser ? <OrderStatusPage orders={orders} onMarkReceived={markOrderReceived} onReload={loadActiveOrders} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/history') {
-    page = isUser ? <HistoryPage orders={orders} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isUser ? <HistoryPage orders={orders} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/reviews') {
-    page = isUser ? <ReviewPage orders={orders} reviews={reviews} onSubmitReview={submitReview} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} />
+    page = isUser ? <ReviewPage orders={orders} reviews={reviews} onSubmitReview={submitReview} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/account') {
-    page = <AccountPage account={account} onUpdateAccount={updateAccount} onConfirm={showConfirm} />
+    {/*権限エラー画面 練習問題3-1-7-2*/}
+    page = isUser ?　<AccountPage account={account} onUpdateAccount={updateAccount} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else {
-    page = <AccessDeniedPage onNavigate={navigate} />
+    page = <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   }
 
   return (
