@@ -57,7 +57,9 @@ const buildPickupOptions = () => {
   return { dateOptions, slots }
 }
 
-export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onSubmitOrder, onNavigate }) {
+{/*注文商品の削除 練習問題5-1-16-1*/}
+{/*AppコンポーネントからpropsとしてonConfirmを受け取る*/}
+export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onSubmitOrder, onNavigate, onConfirm }) {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const { dateOptions, slots } = useMemo(() => buildPickupOptions(), [])
   const [selectedDate, setSelectedDate] = useState(dateOptions[0]?.value || '')
@@ -106,7 +108,21 @@ export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onS
               <button type="button" disabled={item.quantity <= 1} onClick={() => onChangeQuantity(item.id, item.quantity - 1)}>-</button>
               <span>{item.quantity}</span>
               <button type="button" onClick={() => onChangeQuantity(item.id, item.quantity + 1)}>+</button>
-              <button className="danger-button" type="button" onClick={() => onRemove(item.id)}>削除</button>
+              {/*注文商品の削除 練習問題5-1-16-1*/}
+              {/*確認用のモーダルを表示する*/}
+              <button
+                className="danger-button"
+                type="button"
+                onClick={() => onConfirm({
+                  title: '商品の削除確認',
+                  message: `${item.name}をカートから削除しますか？`,
+                  confirmText: '削除する',
+                  confirmVariant: 'danger',
+                  onConfirm: () => onRemove(item.id),
+                })}
+              >
+                削除
+              </button>
             </div>
           </article>
         ))}

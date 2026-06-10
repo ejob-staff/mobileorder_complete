@@ -440,7 +440,9 @@ function App() {
   } else if (route === '/menu') {
     page = isUser ? <MenuPage products={products} cart={cart} onAddToCart={addToCart} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-confirm') {
-    page = isUser ? <ConfirmPage cart={cart} onChangeQuantity={changeQuantity} onRemove={removeFromCart} onSubmitOrder={submitOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
+    {/*注文商品の削除 練習問題5-1-16-1*/}
+    {/*注文商品の削除時に確認用のモーダルを表示する*/}
+    page = isUser ? <ConfirmPage cart={cart} onChangeQuantity={changeQuantity} onRemove={removeFromCart} onSubmitOrder={submitOrder} onNavigate={navigate} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-complete') {
     page = isUser ? <CompletePage latestOrder={latestOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-status') {
