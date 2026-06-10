@@ -389,6 +389,8 @@ function App() {
     return <LoginPage onLogin={login} onNavigate={navigate} />
   }
 
+  {/*権限エラー画面 練習問題3-1-7-1*/}
+  {/*propsとして戻り先とボタン文言*/}
   let page = null
   if (route === '/admin/products') {
     page = isAdmin ? (
