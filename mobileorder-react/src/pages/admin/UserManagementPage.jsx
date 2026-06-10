@@ -103,6 +103,19 @@ export default function UserManagementPage({ users, codes, currentUsername, init
     })
   }
 
+  /*React側のログイン処理 練習問題4-1-4-1*/
+  /*利用停止、利用再開のステータス更新の際にも確認用のモーダルを表示する*/
+  const toggleUserStatus = (user) => {
+    const actionLabel = user.enabled ? '利用停止' : '利用再開'
+    onConfirm({
+      title: `ユーザー${actionLabel}の確認`,
+      message: `ユーザー名「${user.username}」のステータスを「${actionLabel}」に変更します。よろしいですか？`,
+      confirmText: actionLabel,
+      confirmVariant: user.enabled ? 'danger' : undefined,
+      onConfirm: () => onToggleUserStatus(user.id),
+    })
+  }
+
   const deleteUser = (user) => {
     onConfirm({
       title: 'ユーザー削除の確認',
@@ -165,7 +178,9 @@ export default function UserManagementPage({ users, codes, currentUsername, init
                       <span>ステータス {user.status}</span>
                     </div>
                     <div className="item-actions">
-                      <button className="ghost-button" type="button" disabled={isAdminUser} onClick={() => onToggleUserStatus(user.id)}>
+                      {/*React側のログイン処理 練習問題4-1-4-1*/}
+                      {/*利用停止、利用再開のステータス更新の際にも確認用のモーダルを表示する*/}
+                      <button className="ghost-button" type="button" disabled={isAdminUser} onClick={() => toggleUserStatus(user)}>
                         {user.enabled ? '利用停止' : '利用再開'}
                       </button>
                       <button className="danger-button" type="button" disabled={isCurrentUser} onClick={() => deleteUser(user)}>

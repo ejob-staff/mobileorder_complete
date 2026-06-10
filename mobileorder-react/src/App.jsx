@@ -44,7 +44,8 @@ function App() {
   const [confirmModal, setConfirmModal] = useState(null)
   const isAdmin = auth?.role === 'admin'
   const isUser = auth?.role === 'user'
-  {/*権限エラー画面 練習問題3-1-7-1*/}
+  /*権限エラー画面 練習問題3-1-7-1*/
+  /*戻り先とボタン文言をログイン中のユーザーに応じて切り替える*/
   const accessDeniedHome = isAdmin
     ? { homePath: '/admin/products', homeLabel: '商品管理へ戻る' }
     : { homePath: '/menu', homeLabel: '商品選択へ戻る' }
@@ -320,7 +321,9 @@ function App() {
       return
     }
     const product = products.find((item) => item.id === id)
-    setCart((current) => current.map((item) => (item.id === id ? { ...item, quantity: Math.min(product.stock, quantity) } : item)))
+    /*注文商品の数量変更 練習問題5-1-15-1*/
+    /*数量を1以上に保持する*/
+    setCart((current) => current.map((item) => (item.id === id ? { ...item, quantity: Math.min(product.stock, Math.max(1, quantity)) } : item)))
   }
 
   const removeFromCart = (id) => {
@@ -448,6 +451,7 @@ function App() {
     page = isUser ? <ReviewPage orders={orders} reviews={reviews} onSubmitReview={submitReview} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/account') {
     {/*権限エラー画面 練習問題3-1-7-2*/}
+    {/*管理者ユーザーがアカウント管理画面のURLにアクセスした際は権限エラー画面を表示するようにする*/}
     page = isUser ?　<AccountPage account={account} onUpdateAccount={updateAccount} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else {
     page = <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />

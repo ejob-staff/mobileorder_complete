@@ -43,19 +43,21 @@ export default function SignupPage({ onSignup, onNavigate }) {
             <input name="code" value={form.code} onChange={updateForm} placeholder="ユーザー管理番号を入力してください" required />
           </label>
 
+          {/*新規アカウント作成画面 練習問題4-1-10-1*/}
+          {/*ユーザー管理番号以外の入力欄にもplaceholderを指定する*/}
           <label>
             ユーザー名
-            <input name="username" value={form.username} onChange={updateForm} autoComplete="username" required />
+            <input name="username" value={form.username} onChange={updateForm} placeholder="ユーザー名を入力してください" autoComplete="username" required />
           </label>
 
           <label>
             パスワード
-            <input name="password" type="password" value={form.password} onChange={updateForm} autoComplete="new-password" required />
+            <input name="password" type="password" value={form.password} onChange={updateForm} placeholder="パスワードを入力してください" autoComplete="new-password" required />
           </label>
 
           <label>
             パスワード確認用
-            <input name="passwordConfirm" type="password" value={form.passwordConfirm} onChange={updateForm} autoComplete="new-password" required />
+            <input name="passwordConfirm" type="password" value={form.passwordConfirm} onChange={updateForm} placeholder="もう一度パスワードを入力してください" autoComplete="new-password" required />
           </label>
 
           <div className="form-actions">

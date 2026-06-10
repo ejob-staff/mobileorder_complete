@@ -18,9 +18,15 @@ export default function MenuPage({ products, cart, onAddToCart, onNavigate }) {
 
     return matchesCategory && matchesSearch
   })
+  /*商品検索 練習問題5-1-7-1*/
+  /*検索文字が入力されている状態で商品が見つからない場合の文言を
+  * 「検索条件に一致する商品はありません。」に修正する*/
+  /*カテゴリの絞り込み 練習問題5-1-8-1*/
+  /*検索文字が入力されていない状態で商品が見つからない場合の文言を
+  * 「「${category}」のカテゴリの商品は準備中です。」に修正する*/
   const emptyMessage = normalizedSearchText
-    ? '条件に一致する商品はありません。'
-    : `「${category}」の商品はまだありません。`
+    ? '検索条件に一致する商品はありません。'
+    : `「${category}」のカテゴリの商品は準備中です。`
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
   const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0)
 

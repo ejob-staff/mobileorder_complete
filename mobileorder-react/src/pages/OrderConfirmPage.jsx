@@ -88,7 +88,9 @@ export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onS
       <section className="page-head">
         <p className="eyebrow">Confirm</p>
         <h1>注文確認</h1>
-        <p>内容と受け取り日時を確認して、注文を確定してください。</p>
+        {/*注文確認画面 練習問題5-1-8-1*/}
+        {/*「内容と受け取り日時を確認して、注文を確定してみましょう。」に文言を変更*/}
+        <p>内容と受け取り日時を確認して、注文を確定してみましょう。</p>
       </section>
 
       <section className="order-summary">
@@ -99,7 +101,9 @@ export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onS
               <p>¥{item.price.toLocaleString()} / {item.quantity}点</p>
             </div>
             <div className="quantity-row compact">
-              <button type="button" onClick={() => onChangeQuantity(item.id, item.quantity - 1)}>-</button>
+              {/*注文商品の数量変更 練習問題5-1-15-1*/}
+              {/*数量を1以上に保持する*/}
+              <button type="button" disabled={item.quantity <= 1} onClick={() => onChangeQuantity(item.id, item.quantity - 1)}>-</button>
               <span>{item.quantity}</span>
               <button type="button" onClick={() => onChangeQuantity(item.id, item.quantity + 1)}>+</button>
               <button className="danger-button" type="button" onClick={() => onRemove(item.id)}>削除</button>
