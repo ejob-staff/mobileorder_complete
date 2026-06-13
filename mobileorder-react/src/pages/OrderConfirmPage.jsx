@@ -161,7 +161,21 @@ export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onS
 
       <div className="actions">
         <button className="ghost-button" type="button" onClick={() => onNavigate('/menu')}>商品選択へ戻る</button>
-        <button type="button" disabled={!pickupAt} onClick={() => onSubmitOrder(pickupAt)}>注文を確定する</button>
+        {/*注文登録の業務ロジック3 練習問題5-1-27-1*/}
+        {/*注文確定の際に確認用のモーダルを表示する*/}
+        <button
+          type="button"
+          disabled={!pickupAt}
+          onClick={() => onConfirm({
+            title: '注文確定の確認',
+            message: '注文を確定してもよいでしょうか？',
+            confirmText: '注文を確定する',
+            confirmVariant: 'danger',
+            onConfirm: () => onSubmitOrder(pickupAt),
+          })}
+        >
+          注文を確定する
+        </button>
       </div>
     </main>
   )
