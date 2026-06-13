@@ -6,7 +6,9 @@ export default function OrderCompletePage({ latestOrder, onNavigate }) {
 
       {latestOrder ? (
         <section className="complete-summary">
-          <p>ご注文を受け付けました。受け取り準備ができるまで少しお待ちください。</p>
+          {/*注文完了画面の表示 練習問題5-1-28-1*/}
+          {/*案内文を要件に合わせて修正する*/}
+          <p>ご注文を受け付けました。<br/>受け取り準備ができるまでしばらくお待ちください。</p>
           <div className="complete-order-number">
             <span>注文番号</span>
             <strong>{latestOrder.id}</strong>
