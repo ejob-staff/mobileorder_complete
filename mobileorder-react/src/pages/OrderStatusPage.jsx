@@ -40,7 +40,9 @@ export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
               {order.status === 'CANCELED' && (
                 <section className="store-message">
                   <h3>店舗からの連絡</h3>
-                  <p>管理者ユーザー名: {order.cancellationAdminUsername}</p>
+                  {/*注文キャンセル 練習問題5-1-33-1*/}
+                  {/*「管理者ユーザー名:」→「店舗担当者:」*/}
+                  <p>店舗担当者: {order.cancellationAdminUsername}</p>
                   <p>キャンセルの理由: {order.cancelReason}</p>
                 </section>
               )}
