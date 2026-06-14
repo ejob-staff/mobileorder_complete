@@ -1,12 +1,16 @@
+{/*注文提供済み 練習問題5-1-34-1*/}
+{/*SERVEDの場合の文言を修正する*/}
 const userMessages = {
   PENDING: 'まだ注文の準備は始まっておりません。',
   COOKING: 'ご注文の品を準備しております。',
   READY: 'ご注文の品の準備が完了しました。',
-  SERVED: '店舗側では提供済みです。受け取りが完了している場合は、受け取り完了の確認をお願いします。',
+  SERVED: 'ご注文の品は提供済みです。',
   RECEIVED: '受け取りが完了しました。',
   CANCELED: '店舗側で注文がキャンセルされました。店舗からの連絡をご確認ください。',
 }
 
+{/*注文提供済み 練習問題5-1-34-2*/}
+{/*onReloadのpropsの受け渡しは不要なので削除する*/}
 export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
   return (
     <main className="container">
@@ -30,36 +34,50 @@ export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
                   <div className="order-meta-list">
                     <span>注文日時: {order.createdAt}</span>
                     <span>受取日時: {order.pickupAt}</span>
+                    {/*注文キャンセル 練習問題5-1-33-3*/}
+                    {/*「注文商品:」の見出しを追加*/}
+                    <span>注文商品:</span>
                   </div>
                 </div>
                 <span className={`order-badge ${order.status.toLowerCase()}`}>{order.statusLabel}</span>
               </div>
 
-              <p className={`status-message ${order.status.toLowerCase()}`}>{userMessages[order.status]}</p>
-
-              {order.status === 'CANCELED' && (
-                <section className="store-message">
-                  <h3>店舗からの連絡</h3>
-                  {/*注文キャンセル 練習問題5-1-33-1*/}
-                  {/*「管理者ユーザー名:」→「店舗担当者:」*/}
-                  <p>店舗担当者: {order.cancellationAdminUsername}</p>
-                  <p>キャンセルの理由: {order.cancelReason}</p>
-                </section>
-              )}
-
               <ul className="order-items">
                 {order.items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
               </ul>
 
-              <div className="total-row">
-                <span>合計</span>
-                <strong>¥{order.total.toLocaleString()}</strong>
+              {/*注文キャンセル 練習問題5-1-33-4*/}
+              {/*合計金額の表示部分のレイアウトを整える*/}
+              <div className="order-meta-list">
+                <span>合計:</span>
               </div>
+              <strong　className="order-items">¥{order.total.toLocaleString()}</strong>
 
-              {order.status === 'SERVED' && (
-                <div className="actions">
-                  <button type="button" onClick={() => onMarkReceived(order.id)}>受取完了</button>
-                </div>
+              {/*注文提供済み 練習問題5-1-34-2*/}
+              {/*注文ステータス「提供済み」の場合で「受取完了」ボタン押下後に確認用のモーダルを表示する*/}
+              {/*注文提供済み 練習問題5-1-34-1*/}
+              {/*注文ステータスが「提供済み」の場合のレイアウトを調整する*/}
+              {/*注文キャンセル 練習問題5-1-33-2*/}
+              {/*合計金額の下にステータス文言と注文ステータス「キャンセル」時の文言を移動する*/}
+              {order.status === 'SERVED' ? (
+                  <div className={`status-message ${order.status.toLowerCase()}`}>
+                    <p>{userMessages[order.status]}<br/>下の「受取完了」ボタンから受取完了の確認をお願いします。</p>
+                    <div className="received-action">
+                      <button type="button" onClick={() => onMarkReceived(order.id)}>受取完了</button>
+                    </div>
+                  </div>
+              ) : (
+                  <p className={`status-message ${order.status.toLowerCase()}`}>{userMessages[order.status]}</p>
+              )}
+
+              {order.status === 'CANCELED' && (
+                  <section className="store-message">
+                    <h3>店舗からの連絡</h3>
+                    {/*注文キャンセル 練習問題5-1-33-1*/}
+                    {/*「管理者ユーザー名:」→「店舗担当者:」*/}
+                    <p>店舗担当者: {order.cancellationAdminUsername}</p>
+                    <p>キャンセルの理由: {order.cancelReason}</p>
+                  </section>
               )}
             </article>
           ))}
