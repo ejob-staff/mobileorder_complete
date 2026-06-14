@@ -11,7 +11,7 @@ const userMessages = {
 
 {/*注文提供済み 練習問題5-1-34-2*/}
 {/*onReloadのpropsの受け渡しは不要なので削除する*/}
-export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
+export default function OrderStatusPage({ orders, onMarkReceived, onConfirm }) {
   return (
     <main className="container">
       <section className="page-head admin-page-head">
@@ -51,7 +51,7 @@ export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
               <div className="order-meta-list">
                 <span>合計:</span>
               </div>
-              <strong　className="order-items">¥{order.total.toLocaleString()}</strong>
+              <strong className="order-items">¥{order.total.toLocaleString()}</strong>
 
               {/*注文提供済み 練習問題5-1-34-2*/}
               {/*注文ステータス「提供済み」の場合で「受取完了」ボタン押下後に確認用のモーダルを表示する*/}
@@ -63,7 +63,18 @@ export default function OrderStatusPage({ orders, onMarkReceived, onReload }) {
                   <div className={`status-message ${order.status.toLowerCase()}`}>
                     <p>{userMessages[order.status]}<br/>下の「受取完了」ボタンから受取完了の確認をお願いします。</p>
                     <div className="received-action">
-                      <button type="button" onClick={() => onMarkReceived(order.id)}>受取完了</button>
+                      <button
+                        type="button"
+                        onClick={() => onConfirm({
+                          title: '受取完了の確認',
+                          message: 'ご注文の品を受取完了にしてもよろしいでしょうか。',
+                          confirmText: '受取完了にする',
+                          confirmVariant: 'danger',
+                          onConfirm: () => onMarkReceived(order.id),
+                        })}
+                      >
+                        受取完了
+                      </button>
                     </div>
                   </div>
               ) : (

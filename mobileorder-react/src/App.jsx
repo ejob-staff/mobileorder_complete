@@ -448,7 +448,10 @@ function App() {
   } else if (route === '/order-complete') {
     page = isUser ? <CompletePage latestOrder={latestOrder} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-status') {
-    page = isUser ? <OrderStatusPage orders={orders} onMarkReceived={markOrderReceived} onReload={loadActiveOrders} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
+    {/*注文提供済み 練習問題5-1-34-2*/}
+    {/*onReloadのpropsの受け渡しは不要なので削除する*/}
+    {/*注文ステータス「提供済み」の場合で「受取完了」ボタン押下後に確認用のモーダルを表示する*/}
+    page = isUser ? <OrderStatusPage orders={orders} onMarkReceived={markOrderReceived} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/history') {
     page = isUser ? <HistoryPage orders={orders} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/reviews') {
