@@ -2260,3 +2260,8 @@ textarea:focus {
   padding: 7px 14px;
   font-size: 13px;
 }
+
+.review-product > div:first-child {
+  display: grid;
+  gap: 6px;
+}
