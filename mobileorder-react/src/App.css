@@ -2242,3 +2242,21 @@ textarea:focus {
     text-align: left;
   }
 }
+
+/*6-1.注文評価機能 追加CSS*/
+.review-form {
+  justify-items: start;
+  max-width: 520px;
+}
+
+.review-form textarea {
+  min-height: 76px;
+  max-height: 120px;
+  resize: vertical;
+}
+
+.review-form > button {
+  min-height: 34px;
+  padding: 7px 14px;
+  font-size: 13px;
+}
