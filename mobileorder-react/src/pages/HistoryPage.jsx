@@ -50,7 +50,7 @@ function OrderDetailModal({ order, onClose }) {
         {order.status === 'CANCELED' && (
           <section className="store-message">
             <h3>店舗からの連絡</h3>
-            <p>管理者ユーザー名: {order.cancellationAdminUsername}</p>
+            <p>店舗担当者: {order.cancellationAdminUsername}</p>
             <p>キャンセルの理由: {order.cancelReason}</p>
           </section>
         )}
@@ -63,6 +63,8 @@ function OrderDetailModal({ order, onClose }) {
   )
 }
 
+{/*注文履歴確認画面 練習問題5-1-37-1*/}
+{/*注文状況確認画面の注文状況カードのレイアウトに合わせる*/}
 export default function HistoryPage({ orders }) {
   const [selectedOrder, setSelectedOrder] = useState(null)
 
@@ -80,7 +82,7 @@ export default function HistoryPage({ orders }) {
         <section className="history-list">
           {orders.map((order) => (
             <article
-              className="history-item order-history-item clickable-history-item"
+              className="order-status-card clickable-history-item"
               key={order.id}
               role="button"
               tabIndex="0"
@@ -91,23 +93,31 @@ export default function HistoryPage({ orders }) {
                 }
               }}
             >
-              <div>
-                <h2>注文番号: {order.id}</h2>
-                <div className="order-meta-list">
-                  <span>注文日時: {order.createdAt}</span>
-                  <span>受け取り日時: {order.pickupAt}</span>
+              <div className="order-status-head">
+                <div>
+                  <h2>注文番号: {order.id}</h2>
+                  <div className="order-meta-list">
+                    <span>注文日時: {order.createdAt}</span>
+                    <span>受取日時: {order.pickupAt}</span>
+                    <span>注文商品:</span>
+                  </div>
                 </div>
                 <span className={`order-badge ${order.status.toLowerCase()}`}>{order.statusLabel}</span>
               </div>
-              <ul>
+
+              <ul className="order-items">
                 {order.items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
               </ul>
-              <strong>¥{order.total.toLocaleString()}</strong>
+
+              <div className="order-meta-list">
+                <span>合計:</span>
+              </div>
+              <strong className="order-total">¥{order.total.toLocaleString()}</strong>
 
               {order.status === 'CANCELED' && (
                 <section className="store-message">
                   <h3>店舗からの連絡</h3>
-                  <p>管理者ユーザー名: {order.cancellationAdminUsername}</p>
+                  <p>店舗担当者: {order.cancellationAdminUsername}</p>
                   <p>キャンセルの理由: {order.cancelReason}</p>
                 </section>
               )}
