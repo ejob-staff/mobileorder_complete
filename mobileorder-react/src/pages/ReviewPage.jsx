@@ -51,7 +51,7 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
       <section className="page-head">
         <p className="eyebrow">Review</p>
         <h1>注文評価</h1>
-        <p>受け取りが完了した商品に評価と感想を登録できます。</p>
+        <p>受取完了した商品に評価と感想を登録できます。</p>
       </section>
 
       {receivedOrders.length === 0 ? (
@@ -63,7 +63,7 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
               <div className="order-status-head">
                 <div>
                   <h2>注文番号: {order.id}</h2>
-                  <p>受け取り日時: {order.pickupAt}</p>
+                  <p>受取日時: {order.pickupAt}</p>
                 </div>
                 <span className={`order-badge ${order.status.toLowerCase()}`}>{order.statusLabel}</span>
               </div>
@@ -87,7 +87,7 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
                         <textarea
                           value={form.comment}
                           onChange={(event) => updateForm(key, 'comment', event.target.value)}
-                          placeholder="商品に対する感想を入力してください"
+                          placeholder="商品に対する感想を入力してみましょう"
                         />
                         <button type="button" onClick={() => submit(order, item)}>評価を登録する</button>
                       </div>
