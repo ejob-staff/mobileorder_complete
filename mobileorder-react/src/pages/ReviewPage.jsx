@@ -51,7 +51,9 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
       <section className="page-head">
         <p className="eyebrow">Review</p>
         <h1>注文評価</h1>
-        <p>受取完了した商品に評価と感想を登録できます。</p>
+        {/*注文評価登録画面 練習問題6-1-2-1*/}
+        {/*画面の内容が伝わりやすい文言に変更する*/}
+        <p>受取完了した商品にスター評価とレビューを登録できます。</p>
       </section>
 
       {receivedOrders.length === 0 ? (
