@@ -36,10 +36,13 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
   const submit = async (order, item) => {
     const key = formKey(order.id, item.productId)
     const form = forms[key] || { rating: 5, comment: '' }
+    {/*注文評価登録画面 練習問題6-1-12-1*/}
+    {/*確認用モーダルの文言等を修正する*/}
     onConfirm({
-      title: '評価を登録しますか？',
-      message: '登録した評価と感想は店舗の管理者が確認します。内容を確認してから登録してください。',
+      title: '注文評価登録確認',
+      message: '登録するスター評価とレビューは店舗担当者が確認します。登録してもよろしいでしょうか。',
       confirmText: '登録する',
+      confirmVariant: 'danger',
       onConfirm: async () => {
         await onSubmitReview({ orderNumber: order.id, productId: item.productId, rating: form.rating, comment: form.comment })
       },
