@@ -85,6 +85,9 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
                       <p className="notice">評価済みです。</p>
                     ) : (
                       <div className="review-form">
+                        {/*注文評価登録画面 練習問題6-1-2-2*/}
+                        {/*何をすべきものなのかを明確に記載しておく*/}
+                        <p>スター評価とレビューを登録してみましょう。</p>
                         <RatingInput value={form.rating} onChange={(rating) => updateForm(key, 'rating', rating)} />
                         <textarea
                           value={form.comment}

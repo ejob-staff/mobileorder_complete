@@ -2265,3 +2265,11 @@ textarea:focus {
   display: grid;
   gap: 6px;
 }
+
+/*注文評価登録画面 練習問題6-1-2-2*/
+/*位置の調整、ボーダーを入れる*/
+.review-form p {
+  width: 100%;
+  padding-top: 14px;
+  border-top: 1px solid #e8dcf1;
+}
