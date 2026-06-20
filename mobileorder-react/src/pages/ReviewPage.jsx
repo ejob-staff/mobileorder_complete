@@ -31,12 +31,14 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
     }))
   }
 
-  const alreadyReviewed = (orderNumber, productId) => reviews.some((review) => review.orderNumber === orderNumber && review.productId === productId)
+  {/*注文評価登録確認 練習問題6-1-12-2*/}
+  {/*レビュー情報取得処理に変更*/}
+  const findReview = (orderNumber, productId) => reviews.find((review) => review.orderNumber === orderNumber && review.productId === productId)
 
   const submit = async (order, item) => {
     const key = formKey(order.id, item.productId)
     const form = forms[key] || { rating: 5, comment: '' }
-    {/*注文評価登録画面 練習問題6-1-12-1*/}
+    {/*注文評価登録確認 練習問題6-1-12-1*/}
     {/*確認用モーダルの文言等を修正する*/}
     onConfirm({
       title: '注文評価登録確認',
@@ -76,7 +78,9 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
               {order.items.map((item) => {
                 const key = formKey(order.id, item.productId)
                 const form = forms[key] || { rating: 5, comment: '' }
-                const reviewed = alreadyReviewed(order.id, item.productId)
+                {/*注文評価登録確認 練習問題6-1-12-2*/}
+                {/*レビュー情報取得処理に変更*/}
+                const reviewed = findReview(order.id, item.productId)
 
                 return (
                   <section className="review-product" key={item.id}>
@@ -84,8 +88,14 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
                       <h3>{item.name}</h3>
                       <p>{item.quantity}点 / ¥{(item.price * item.quantity).toLocaleString()}</p>
                     </div>
+                    {/*注文評価登録確認 練習問題6-1-12-2*/}
+                    {/*レビュー情報取得処理に変更*/}
                     {reviewed ? (
-                      <p className="notice">評価済みです。</p>
+                      <div className="review-comment">
+                        <span>評価済みです。</span>
+                        <RatingStars rating={reviewed.rating} />
+                        <p>{reviewed.comment || 'レビューは未入力です。'}</p>
+                      </div>
                     ) : (
                       <div className="review-form">
                         {/*注文評価登録画面 練習問題6-1-2-2*/}
@@ -110,14 +120,16 @@ export default function ReviewPage({ orders, reviews, onSubmitReview, onConfirm 
 
       {reviews.length > 0 && (
         <section className="review-list my-review-list">
-          <h2>登録済みの評価</h2>
+          {/*登録済み評価一覧 練習問題6-1-16-1*/}
+          {/*注文評価カードと同じようなレイアウトになるように調整してみましょう*/}
+          <h2>登録済み評価一覧</h2>
           {reviews.map((review) => (
-            <article className="review-row" key={review.id}>
-              <div>
+            <article className="review-product" key={review.id}>
+              <div className="review-comment">
                 <h3>{review.productName}</h3>
+                <RatingStars rating={review.rating} />
                 <p>{review.comment || 'コメントはありません。'}</p>
               </div>
-              <RatingStars rating={review.rating} />
             </article>
           ))}
         </section>
