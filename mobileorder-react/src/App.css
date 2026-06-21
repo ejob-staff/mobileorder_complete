@@ -1637,9 +1637,12 @@ label {
   font-weight: 800;
 }
 
+/*注文評価登録画面 練習問題6-1-19-1*/
+/*幅を調整する*/
 .review-comment {
   display: grid;
   gap: 6px;
+  width: min(600px, 100%);
   padding: 12px;
   border: 1px solid #ead7f0;
   border-radius: 8px;
@@ -2243,6 +2246,14 @@ textarea:focus {
   }
 }
 
+/*注文評価登録画面 練習問題6-1-2-2*/
+/*位置の調整、ボーダーを入れる*/
+.review-form p {
+  width: 100%;
+  padding-top: 14px;
+  border-top: 1px solid #e8dcf1;
+}
+
 /*6-1.注文評価機能 追加CSS*/
 .review-form {
   justify-items: start;
@@ -2266,10 +2277,19 @@ textarea:focus {
   gap: 6px;
 }
 
-/*注文評価登録画面 練習問題6-1-2-2*/
-/*位置の調整、ボーダーを入れる*/
-.review-form p {
-  width: 100%;
-  padding-top: 14px;
-  border-top: 1px solid #e8dcf1;
+/*7-1.アカウント管理機能 追加CSS*/
+.account-panel {
+  width: min(520px, 100%);
+  margin-inline: auto;
+}
+
+.account-panel > button,
+.account-panel .form-actions button {
+  min-height: 34px;
+  padding: 7px 14px;
+  font-size: 13px;
+}
+
+.account-panel > button {
+  justify-self: start;
 }

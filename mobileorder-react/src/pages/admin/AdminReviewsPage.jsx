@@ -41,16 +41,18 @@ export default function AdminReviewsPage({ reviews, onLoadReviews }) {
                 <div className="review-detail-list">
                   <span>注文番号: {review.orderNumber}</span>
                   <span>ユーザー名: {review.username}</span>
-                  <span>評価: <RatingStars rating={review.rating} /></span>
+                  {/*注文評価の確認 練習問題6-1-19-1*/}
+                  {/*評価登録日時をユーザー名の下に移動する*/}
+                  <span>評価登録日時: {review.createdAt}</span>
+                  <span>スター評価: <RatingStars rating={review.rating} /></span>
                 </div>
                 <p className="review-comment">
-                  <span>お客様の感想</span>
+                  <span>お客様からのレビュー</span>
                   {review.comment || 'コメントはありません。'}
                 </p>
               </div>
-              <div className="review-meta">
-                <span>{review.createdAt}</span>
-              </div>
+              {/*注文評価の確認 練習問題6-1-19-1*/}
+              {/*評価登録日時をユーザー名の下に移動する*/}
             </article>
           ))}
         </section>
