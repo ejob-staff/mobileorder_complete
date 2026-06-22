@@ -40,7 +40,8 @@ export default function AccountPage({ account, onUpdateAccount, onConfirm }) {
     setError('')
 
     if (form.password !== form.passwordConfirm) {
-      setError('パスワードとパスワード確認用が一致しません。')
+      {/*正しい文言に修正*/}
+      setError('パスワードと確認用のパスワードが一致しません。')
       return
     }
 
