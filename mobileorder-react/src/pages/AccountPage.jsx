@@ -45,10 +45,13 @@ export default function AccountPage({ account, onUpdateAccount, onConfirm }) {
       return
     }
 
+    {/*パスワード変更確認 練習問題7-1-10-1*/}
+    {/*確認用のモーダルの文言等を修正する*/}
     onConfirm({
-      title: 'パスワードを変更しますか？',
-      message: 'お客様のパスワードが変更されますが、よろしいですか？',
+      title: 'パスワード変更確認',
+      message: 'パスワードを変更してもよろしいでしょうか。',
       confirmText: '変更する',
+      confirmVariant: 'danger',
       onConfirm: async () => {
         await onUpdateAccount(form)
         setEditing(false)
