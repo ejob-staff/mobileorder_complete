@@ -76,6 +76,8 @@ export default function AccountPage({ account, onUpdateAccount, onConfirm }) {
         <p>ログイン中のアカウント情報を確認できます。</p>
       </section>
 
+      {/*パスワード変更フォーム 練習問題7-1-8-1*/}
+      {/*placeholderを指定する*/}
       <section className="account-panel">
         {editing ? (
           <form className="account-edit-form" onSubmit={submit}>
@@ -90,11 +92,11 @@ export default function AccountPage({ account, onUpdateAccount, onConfirm }) {
             </label>
             <label>
               パスワード
-              <input name="password" type="password" value={form.password} onChange={updateForm} required />
+              <input name="password" type="password" value={form.password} onChange={updateForm} placeholder="パスワードを入力してみましょう" required />
             </label>
             <label>
               パスワード確認用
-              <input name="passwordConfirm" type="password" value={form.passwordConfirm} onChange={updateForm} required />
+              <input name="passwordConfirm" type="password" value={form.passwordConfirm} onChange={updateForm} placeholder="確認用のパスワードを入力してみましょう" required />
             </label>
             <div className="form-actions">
               <button type="submit">変更する</button>
