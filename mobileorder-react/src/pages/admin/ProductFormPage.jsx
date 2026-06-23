@@ -11,7 +11,7 @@ const emptyProduct = {
   accent: 'berry',
 }
 
-export default function ProductFormPage({ mode, product, onSubmit, onNavigate }) {
+export default function ProductFormPage({ mode, product, onSubmit, onNavigate, onConfirm }) {
   const [form, setForm] = useState(() => {
     if (!product) {
       return emptyProduct
@@ -52,10 +52,18 @@ export default function ProductFormPage({ mode, product, onSubmit, onNavigate })
 
   const submitProduct = async (event) => {
     event.preventDefault()
-    await onSubmit({
-      ...form,
-      price: Number(form.price),
-      stock: Number(form.stock),
+    onConfirm({
+      title: '編集反映の確認',
+      message: '商品情報を更新してもよろしいでしょうか。',
+      confirmText: '変更する',
+      confirmVariant: 'danger',
+      onConfirm: async () => {
+        await onSubmit({
+          ...form,
+          price: Number(form.price),
+          stock: Number(form.stock),
+        })
+      },
     })
   }
 
@@ -125,7 +133,16 @@ export default function ProductFormPage({ mode, product, onSubmit, onNavigate })
 
         <div className="form-actions">
           <button type="submit">{isEdit ? '編集を反映する' : '登録する'}</button>
-          <button className="ghost-button" type="button" onClick={() => onNavigate('/admin/products')}>商品管理へ戻る</button>
+          <button
+            className="ghost-button"
+            type="button"
+            onClick={() => onConfirm({
+              title: '編集キャンセルの確認',
+              message: '入力内容をクリアして商品管理画面に戻ります。よろしいでしょうか。',
+              confirmText: '商品管理に戻る',
+              onConfirm: () => onNavigate('/admin/products'),
+            })}
+          >商品管理へ戻る</button>
         </div>
       </form>
     </main>

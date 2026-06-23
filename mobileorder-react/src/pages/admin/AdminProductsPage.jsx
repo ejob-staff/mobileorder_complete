@@ -23,7 +23,7 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
   const deleteProduct = (product) => {
     onConfirm({
       title: '商品削除の確認',
-      message: '商品情報テーブルに登録されている商品ですが、本当に削除しますか？',
+      message: '商品情報テーブルに登録されている商品ですが、本当に削除してもよろしいでしょうか。',
       confirmText: '削除する',
       confirmVariant: 'danger',
       onConfirm: () => onDelete(product.id),
@@ -66,11 +66,18 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
                   <h3>{product.name}</h3>
                   <span className={product.published ? 'status open' : 'status closed'}>{product.published ? '公開' : '非公開'}</span>
                 </div>
-                <p>{product.description}</p>
-                <div className="meta-row">
-                  <span>{product.category}</span>
-                  <span>¥{product.price.toLocaleString()}</span>
-                  <span>在庫 {product.stock}</span>
+                <div className="order-meta-list">
+                  <span>商品説明:</span>
+                </div>
+                <p className="product-management-items">{product.description}</p>
+                <div className="order-meta-list">
+                  <span>価格:</span>
+                </div>
+                <p className="product-management-items">¥{product.price.toLocaleString()}</p>
+                <div className="order-meta-list">
+                  <span>カテゴリ: {product.category}</span>
+                  <span>在庫: {product.stock}</span>
+                  <span>公開状態: {product.published ? '公開' : '非公開'}</span>
                 </div>
                 <div className="product-metrics" aria-label={`${product.name}の実績`}>
                   <span>
@@ -86,12 +93,34 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
                     <strong>{product.orderedQuantity || 0}件</strong>
                   </span>
                 </div>
-                <div className="item-actions">
-                  <button className="ghost-button" type="button" onClick={() => onTogglePublished(product.id)}>
-                    {product.published ? '非公開にする' : '公開する'}
-                  </button>
-                  <button type="button" onClick={() => onEdit(product.id)}>編集</button>
-                  <button className="danger-button" type="button" onClick={() => deleteProduct(product)}>削除</button>
+                <div className="product-action-section">
+                  <p>公開状態の設定</p>
+                  <div className="item-actions">
+                    <button
+                      className="admin-action-link"
+                      type="button"
+                      onClick={() => onConfirm({
+                        title: '公開設定の変更',
+                        message: product.published ?
+                          '「非公開」に設定します。商品は公開されなくなりますが、よろしいでしょうか。' : '「公開」に設定します。商品が公開されますが、よろしいでしょうか。',
+                        confirmText: product.published ? '非公開にする' : '公開にする',
+                        confirmVariant: 'danger',
+                        onConfirm: () => onTogglePublished(product.id),
+                      })}>
+                      {product.published ? '非公開にする' : '公開にする'}
+                    </button>
+                  </div>
+                </div>
+                <div className="product-action-section">
+                  <div className="item-actions">
+                    <button
+                      className="admin-action-link" type="button" onClick={() => onEdit(product.id)}>商品を編集する</button>
+                  </div>
+                </div>
+                <div className="product-action-section">
+                  <div className="item-actions">
+                    <button className="admin-action-link danger" type="button" onClick={() => deleteProduct(product)}>商品を削除する</button>
+                  </div>
                 </div>
               </div>
             </article>

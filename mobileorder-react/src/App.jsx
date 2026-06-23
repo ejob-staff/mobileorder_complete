@@ -434,11 +434,11 @@ function App() {
       />
     ) : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/admin/products/new') {
-    page = isAdmin ? <ProductFormPage mode="create" onSubmit={createProduct} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
+    page = isAdmin ? <ProductFormPage mode="create" onSubmit={createProduct} onNavigate={navigate} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route.startsWith('/admin/products/edit/')) {
     const editingProductId = Number(route.replace('/admin/products/edit/', ''))
     const editingProduct = products.find((product) => product.id === editingProductId)
-    page = isAdmin ? <ProductFormPage mode="edit" product={editingProduct} onSubmit={(product) => updateProduct(editingProductId, product)} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
+    page = isAdmin ? <ProductFormPage mode="edit" product={editingProduct} onSubmit={(product) => updateProduct(editingProductId, product)} onNavigate={navigate} onConfirm={showConfirm} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/menu') {
     page = isUser ? <MenuPage products={products} cart={cart} onAddToCart={addToCart} onNavigate={navigate} /> : <AccessDeniedPage onNavigate={navigate} {...accessDeniedHome} />
   } else if (route === '/order-confirm') {
