@@ -60,9 +60,11 @@ export default function AccountPage({ account, onUpdateAccount, onConfirm }) {
   }
 
   const cancelEditing = () => {
+    {/*編集キャンセル確認 練習問題7-1-14-1*/}
+    {/*確認用のモーダルの文言等を修正する*/}
     onConfirm({
-      title: '編集をキャンセルしますか？',
-      message: '編集した内容はクリアされますが、よろしいですか？',
+      title: '編集キャンセル確認',
+      message: '入力内容がクリアされますが、よろしいでしょうか。',
       confirmText: 'キャンセルする',
       onConfirm: () => {
         setError('')
