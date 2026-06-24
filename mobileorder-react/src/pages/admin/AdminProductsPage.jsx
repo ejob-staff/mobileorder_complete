@@ -121,12 +121,13 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
                 </div>
                 <div className="product-action-section">
                   <div className="item-actions">
-                    <button
-                      className="admin-action-link" type="button" onClick={() => onEdit(product.id)}>商品を編集する</button>
+                    <p>商品情報の編集</p>
+                    <button className="admin-action-link" type="button" onClick={() => onEdit(product.id)}>商品を編集する</button>
                   </div>
                 </div>
                 <div className="product-action-section">
                   <div className="item-actions">
+                    <p>商品情報の削除</p>
                     <button className="admin-action-link danger" type="button" onClick={() => deleteProduct(product)}>商品を削除する</button>
                   </div>
                 </div>

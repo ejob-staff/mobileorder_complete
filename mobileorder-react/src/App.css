@@ -2321,6 +2321,7 @@ textarea:focus {
 
 .admin-product .product-action-section {
   display: flex;
+  width: min(510px, 100%);
   align-items: center;
   justify-content: flex-start;
   flex-wrap: wrap;
