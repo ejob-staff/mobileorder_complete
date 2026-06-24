@@ -2366,3 +2366,41 @@ textarea:focus {
 .admin-product .admin-action-link.danger:hover {
   color: #be185d;
 }
+
+.admin-layout > .product-action-section,
+.admin-layout > .search-field {
+  width: min(520px, 100%);
+  padding-top: 14px;
+  border-top: 1px solid #d6a7cf;
+}
+
+.admin-layout > .product-action-section {
+  display: grid;
+  margin-bottom: 2px;
+}
+
+.admin-layout > .product-action-section p {
+  margin: 0;
+  color: #563768;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.admin-layout > .product-action-section .admin-action-link {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #7c3aed;
+  padding: 2px 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.admin-layout > .product-action-section .admin-action-link:hover {
+  color: #5b21b6;
+  background: transparent;
+}

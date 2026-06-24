@@ -37,9 +37,17 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
           <p className="eyebrow">Admin</p>
           <h1>商品管理</h1>
           <p>商品の編集、削除、公開状態、在庫数を管理できます。</p>
+          <p>新商品の登録もできます。</p>
         </div>
-        <button type="button" onClick={() => onNavigate('/admin/products/new')}>商品を登録する</button>
       </section>
+
+      <div className="product-action-section">
+        <p>新商品の登録</p>
+        <div className="item-actions">
+          <button
+            className="admin-action-link" type="button" onClick={() => onNavigate('/admin/products/new')}>商品を登録する</button>
+        </div>
+      </div>
 
       <label className="search-field">
         商品検索
