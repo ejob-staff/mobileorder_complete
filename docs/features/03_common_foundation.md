@@ -1,287 +1,489 @@
 ## 3章.共通基盤と画面遷移
-### この章について
-この章では、モバイルオーダーアプリケーションでのReact側の画面切り替え、<br>
-ログイン状態の管理、共通部品、API通信、SpringSecurityによるアクセス制御<br>
-を確認していきます。個別機能に入る前に、アプリ全体がどのように動いているかを押さえていきましょう。<br>
+- [設計資料](#設計資料)
+- [React側ソース](#React側ソース)
+- [Java側ソース](#Java側ソース)
+- [各画面のURL](#各画面のURL)
+- [Reactアプリ全体の中心](#Reactアプリ全体の中心)
+- [ログイン状態の確認](#ログイン状態の確認)
+- [URLと画面遷移の管理](#URLと画面遷移の管理)
+- [ユーザー権限による画面分岐](#ユーザー権限による画面分岐)
+- [権限エラー画面](#権限エラー画面)
+- [必要なデータの読み込み](#必要なデータの読み込み)
+- [共通ヘッダー](#共通ヘッダー)
+- [確認モーダル](#確認モーダル)
+- [API通信の共通処理](#API通信の共通処理)
+- [エラーレスポンス共通化](#エラーレスポンス共通化)
+- [SpringSecurityの基本設定](#SpringSecurityの基本設定)
+- [共通部品](#共通部品)
 
-### 3-1-1.設計資料の確認
-本章では実装に入る前にdocsフォルダの設計資料を確認できるように<br>
-しています。<br>
+### 設計資料
+`docs/`<br>
+　01_requirements.md ---- 要件定義<br>
+　02_basic_design.md ---- 基本設計<br>
+　03_detail_design.md --- 詳細設計<br>
+　04_database_design.md - DB設計<br><br>
+　`features/`<br>
+　　03_common_foundation.md -- 共通基盤と画面遷移<br>
+　　04_authentication.md ----- 認証機能<br>
+　　05_ordering.md ----------- 注文機能<br>
+　　06_order_review.md ------- 注文評価機能<br>
+　　07_account_management.md - アカウント管理機能<br>
+　　08_product_management.md - 商品管理機能<br>
+　　09_order_management.md --- 注文対応管理機能<br>
+　　10_review_management.md -- 注文評価確認機能<br>
+　　11_user_management.md ---- ユーザー管理機能<br>
+　　12_order_analytics.md ---- 注文分析機能<br>
+　　13_initial_data.md ------- 初期データ登録<br>
 
-`docsフォルダの主な設計資料`<br>
-要件定義 - 01_requirements.md<br>
-基本設計 - 02_basic_design.md<br>
-詳細設計 - 03_detail_design.md<br>
-DB設計 - 04_database_design.md<br>
-個別機能ごとの設計資料 - featuresフォルダ内に格納<br>
-※仕様の確認の際にご活用ください。
+### React側ソース
+`mobileorder-react/src/`<br>
+　main.jsx ---------------------- Reactアプリの起動処理<br>
+　App.jsx ----------------------- Reactアプリ全体の中心<br>
+　App.css ----------------------- 共通CSS<br>
+　index.css --------------------- 全体の基本CSS<br><br>
+　`api/`<br>
+　　client.js --------------------- API通信の共通処理<br><br>
+　`components/`<br>
+　　Header.jsx -------------------- 共通ヘッダー<br>
+　　ConfirmModal.jsx -------------- 確認モーダル<br>
+　　RatingStars.jsx --------------- スター評価表示部品<br>
+　　ProductVisual.jsx ------------- 商品ビジュアル部品<br><br>
+　`pages/`<br>
+　　LoginPage.jsx ----------------- ログイン画面<br>
+　　SignupPage.jsx ---------------- 新規アカウント作成画面<br>
+　　PasswordResetPage.jsx --------- パスワード再設定画面<br>
+　　MenuPage.jsx ------------------ 商品選択画面<br>
+　　OrderConfirmPage.jsx ---------- 注文確認画面<br>
+　　OrderCompletePage.jsx --------- 注文完了画面<br>
+　　OrderStatusPage.jsx ----------- 注文状況確認画面<br>
+　　HistoryPage.jsx --------------- 注文履歴確認画面<br>
+　　ReviewPage.jsx ---------------- 注文評価登録画面<br>
+　　AccountPage.jsx --------------- アカウント管理画面<br>
+　　AccessDeniedPage.jsx ---------- 権限エラー画面<br><br>
+　　`admin/`<br>
+　　　AdminProductsPage.jsx --------- 商品管理画面<br>
+　　　ProductFormPage.jsx ----------- 商品登録、商品編集画面<br>
+　　　AdminOrdersPage.jsx ----------- 注文対応管理画面<br>
+　　　AdminReviewsPage.jsx ---------- 注文評価確認画面<br>
+　　　AnalyticsPage.jsx ------------- 注文分析画面<br>
+　　　UserManagementPage.jsx -------- ユーザー管理画面<br>
+　　　AdminUserRegistrationPage.jsx - 新規管理者ユーザー登録画面<br>
 
-要件定義 - このアプリで何を作るのか<br>
-基本設計 - 画面や機能の全体像<br>
-詳細設計 - 画面操作に対してどのような処理が動くのか<br>
-DB設計 - DBテーブル構成、初期データの確認
+### Java側ソース
+`src/main/java/jp/co/mobileorder/`<br>
+　Application.java ------------------- Spring Bootアプリの起動クラス<br><br>
+　`config/`<br>
+　　SecurityConfig.java --------------- SpringSecurityの基本設定<br>
+　　DataInitializer.java -------------- 初期データ登録<br><br>
+　`controller/`<br>
+　　AccountController.java ------------ 新規登録、パスワード再設定API<br>
+　　AccountProfileController.java ----- アカウント情報API<br>
+　　AdminUserController.java ---------- ユーザー管理API<br>
+　　AnalyticsController.java ---------- 注文分析API<br>
+　　ApiExceptionHandler.java ---------- エラーレスポンス共通化<br>
+　　AuthController.java --------------- ログイン状態確認API<br>
+　　OrderController.java -------------- 注文API<br>
+　　ProductController.java ------------ 商品API<br>
+　　ProductReviewController.java ------ 注文評価API<br><br>
+　`dto/`<br>
+　　AccountResponse.java -------------- アカウント情報レスポンス<br>
+　　AccountUpdateRequest.java --------- アカウント更新リクエスト<br>
+　　AdminUserRequest.java ------------- 管理者ユーザー登録リクエスト<br>
+　　AdminUserResponse.java ------------ ユーザー情報レスポンス<br>
+　　AnalyticsResponse.java ------------ 注文分析レスポンス<br>
+　　AuthStatusResponse.java ----------- ログイン状態レスポンス<br>
+　　LoginCheckRequest.java ------------ ログイン確認リクエスト<br>
+　　OrderRequest.java ----------------- 注文登録リクエスト<br>
+　　OrderResponse.java ---------------- 注文情報レスポンス<br>
+　　OrderStatusUpdateRequest.java ----- 注文ステータス更新リクエスト<br>
+　　PasswordResetRequest.java --------- パスワード再設定リクエスト<br>
+　　ProductRequest.java --------------- 商品登録、商品更新リクエスト<br>
+　　ProductResponse.java -------------- 商品情報レスポンス<br>
+　　ProductReviewRequest.java --------- 注文評価登録リクエスト<br>
+　　ProductReviewResponse.java -------- 注文評価レスポンス<br>
+　　SignupRequest.java ---------------- 新規アカウント作成リクエスト<br>
+　　UserManagementCodeResponse.java --- ユーザー管理番号レスポンス<br><br>
+　`entity/`<br>
+　　AppUser.java ---------------------- ユーザー「app_user」<br>
+　　MobileOrder.java ------------------ 注文「mobile_order」<br>
+　　OrderItem.java -------------------- 注文商品「order_item」<br>
+　　OrderStatus.java ------------------ 注文ステータス「テーブルなし」<br>
+　　Product.java ---------------------- 商品「product」<br>
+　　ProductReview.java ---------------- 注文評価「product_review」<br>
+　　Role.java ------------------------- ユーザー権限「テーブルなし」<br>
+　　UserManagementCode.java ----------- ユーザー管理番号「user_management_code」<br><br>
+　`repository/`<br>
+　　AppUserRepository.java ------------ ユーザーRepository<br>
+　　MobileOrderRepository.java -------- 注文Repository<br>
+　　ProductRepository.java ------------ 商品Repository<br>
+　　ProductReviewRepository.java ------ 注文評価Repository<br>
+　　UserManagementCodeRepository.java - 管理番号Repository<br><br>
+　`service/`<br>
+　　AccountProfileService.java -------- アカウント情報処理<br>
+　　AccountService.java --------------- 新規登録、パスワード再設定処理<br>
+　　AdminUserService.java ------------- ユーザー管理処理<br>
+　　AnalyticsService.java ------------- 注文分析処理<br>
+　　AppUserDetailsService.java -------- ログイン時のユーザー情報取得<br>
+　　OrderService.java ----------------- 注文処理<br>
+　　ProductReviewService.java --------- 注文評価処理<br>
+　　ProductService.java --------------- 商品処理<br>
 
-`featuresフォルダ`<br>
-個別機能ごとの設計資料をまとめている<br>
-※仕様の確認の際にご活用ください。<br>
+### 各画面のURL
+`未ログインの場合`<br>
+　/signup -- 新規アカウント作成画面<br>
+　/password-reset -- パスワード再設定画面<br>
+　/login -- ログイン画面<br><br>
 
-### 3-1-2.共通基盤と画面遷移について
-まずはじめにアプリ全体の土台になる処理を確認していきます。<br>
+`ログイン済みの場合`
+- 管理者ユーザー<br>
+　/admin/products -- 商品管理画面<br>
+　/admin/orders -- 注文対応管理画面<br>
+　/admin/reviews -- 注文評価確認画面<br>
+　/admin/analytics -- 注文分析画面<br>
+　/admin/users -- ユーザー管理画面<br>
+　/admin/users/admin/new -- 新規管理者ユーザー登録画面<br>
+　/admin/products/new -- 商品登録画面<br>
+　/admin/products/edit/:id -- 商品編集画面<br><br>
 
-`アプリで使用する主な処理`<br>
-React側でどの画面を表示するかを決める処理<br>
-ログイン状態を確認する処理<br>
-一般ユーザーと管理者ユーザーを分ける処理<br>
-共通ヘッダーや確認モーダルの表示<br>
-API通信の共通処理<br>
-認証と認可の仕組み<br>
-エラーレスポンス共通化<br>
+- 一般ユーザー<br>
+　/menu -- 商品選択画面<br>
+　/order-confirm -- 注文確認画面<br>
+　/order-complete -- 注文完了画面<br>
+　/order-status -- 注文状況確認画面<br>
+　/history -- 注文履歴確認画面<br>
+　/reviews -- 注文評価登録画面<br>
+　/account -- アカウント管理画面<br><br>
 
-### 3-1-3.アプリ全体の処理の流れ
-`mobileorder-react/src/App.jsx`<br>
-Reactアプリ全体の中心になるファイル<br>
-Appコンポーネントを定義している<br>
-ログイン状態、表示する画面、画面ごとのデータ取得、<br>
-共通モーダルなどをまとめて管理している<br>
+- 権限エラー画面の表示条件<br>
+　一般ユーザーが管理者ユーザー用の画面にアクセスした場合<br>
+　管理者ユーザーが一般ユーザー用の画面にアクセスした場合<br>
+　定義されていないURLにアクセスした場合<br>
 
-`Appコンポーネントの主な役割`<br>
-ブラウザに表示されているURLを見て表示する画面を決める<br>
-ログイン中のユーザー情報をauthとしてstateで管理する<br>
-一般ユーザー用画面と管理者用画面を切り替える<br>
-各画面で必要なデータをSpring BootのAPIから取得する<br>
-商品、注文、評価、ユーザー情報などの状態を管理する<br>
-確認モーダルを全画面共通で使えるようにする<br>
-権限がない画面では権限エラー画面を表示する<br>
+### Reactアプリ全体の中心
+- 画面表示時<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　ログイン状態をauthで管理する<br>
+　　現在のURLをrouteとして扱う<br>
+　　routeとauth.roleを見て表示する画面を決める<br>
+　　各画面に必要なデータや処理をpropsで渡す<br>
+　　最後にHeader、表示画面、ConfirmModalをまとめて表示する<br><br>
 
-### 3-1-3.Reactアプリの全体管理
-`mobileorder-react/src/App.jsx`<br>
-Reactアプリ全体の中心になるファイル<br>
-ログイン状態、表示する画面、画面ごとのデータ取得、<br>
-共通モーダルなどをまとめて管理している<br>
+- ここで確認すること<br>
+　画面表示、ログイン状態、データ取得、共通モーダルを`Appコンポーネント`でまとめて管理している<br><br>
 
-`Appコンポーネントの主な役割`<br>
-現在のURLを見て表示する画面を決める<br>
-ログイン中のユーザー情報をauthとしてstateで管理する<br>
-一般ユーザー用画面と管理者用画面を切り替える<br>
-各画面で必要なデータをSpring BootのAPIから取得する<br>
-商品、注文、評価、ユーザー情報などの状態を管理する<br>
-確認モーダルを全画面共通で使えるようにする<br>
-権限がない画面では権限エラー画面を表示する<br>
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/App.jsx<br>
 
-### 3-1-4.URLと画面遷移の管理
-React側ではURLに応じて表示する画面を切り替えている<br>
-useLocationで現在の画面のURLを取得して、<br>
-useNavigateで別画面へ遷移する<br>
+### ログイン状態の確認
+- 画面表示時<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　loadAuthを実行する<br>
+　　GET /api/auth/statusでリクエスト送信<br>
+  <br>
+  Java側<br>
+　`AuthController`<br>
+　　GET /api/auth/statusのリクエスト受取<br>
+　　ログインしていない場合は未ログイン状態を返す<br>
+　　ログイン済みの場合は`AuthStatusResponse`でユーザー情報を返す<br>
+  <br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　ログイン済みの場合はauthにログイン情報を保存する<br>
+　　ログインしていない場合はauthをnullにする<br><br>
 
-`mobileorder-react/src/App.jsx`<br>
-例えば以下のようなURLと画面の対応を管理している<br>
+- ここで確認すること<br>
+　authがあるかどうかでログイン済みか判断している<br>
+　auth.roleがuserなら一般ユーザー、adminなら管理者ユーザーとして扱う<br><br>
 
-/login - 共通 - ログイン画面<br>
-/menu - 一般ユーザー - 商品選択画面<br>
-/order-confirm - 一般ユーザー - 注文確認画面<br>
-/admin/products - 管理者ユーザー - 商品管理画面<br>
-/admin/orders - 管理者ユーザー - 注文対応管理画面<br>
-/admin/analytics - 管理者ユーザー - 注文分析画面<br>
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/App.jsx<br>
+  <br>
+  Java側<br>
+　controller/AuthController.java<br>
+　dto/AuthStatusResponse.java<br>
 
-### 3-1-5.ログイン状態の確認
-`mobileorder-react/src/App.jsx`<br>
-画面表示前に/api/auth/statusを呼び出して、現在ログインしているかを確認する
+### URLと画面遷移の管理
+URLと画面遷移の管理では、現在のURLを見て表示する画面を決める<br>
 
-`mobileorder-react/src/api/client.js`<br>
-API通信に失敗したらエラーとして扱う
+- URLを確認する場合<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　useLocationで現在表示している画面のURLを取得する<br>
+　　location.pathnameをrouteとして扱う<br><br>
 
-`controller/AuthController.java`<br>
-未ログインや権限不足のAPIアクセスを拒否する
+- 画面を移動する場合<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　useNavigateから取得したnavigateを使う<br>
+　　navigate('/menu')のように指定したURLへ移動する<br><br>
 
-`ログイン済みの場合`<br>
-ユーザー名や権限をauthに保存する
+- ここで確認すること<br>
+　React側ではURLを見て表示画面を決めている<br>
+　ボタン押下時はnavigateを使って別画面へ移動している<br><br>
 
-`ログインしていない場合`<br>
-ログイン画面、新規アカウント作成画面、パスワード再設定画面だけを表示できる<br>
-それ以外の画面へ進もうとした場合は、ログイン画面に戻る
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/App.jsx<br>
 
-### 3-1-6.ユーザごとの画面分岐
-`mobileorder-react/src/App.jsx`<br>
-ログイン中ユーザーの権限はauth.roleに入る<br>
-adminかuserかを見て、表示できる画面を分けている<br>
+### ユーザー権限による画面分岐
+ユーザー権限による画面分岐では、一般ユーザーと管理者ユーザーで表示できる画面を分ける<br>
 
-`一般ユーザーが管理者ユーザー用の画面にアクセスした場合`<br>
-権限エラー画面を表示する<br>
-`管理者ユーザーが一般ユーザー用の画面にアクセスした場合`<br>
-権限エラー画面を表示する
+- ログイン状態を確認した後<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　auth.roleを確認する<br>
+　　一般ユーザーの場合はisUserとして扱う<br>
+　　管理者ユーザーの場合はisAdminとして扱う<br><br>
+  <br>
+  Java側<br>
+　`Role`<br>
+　　ROLE_USERを一般ユーザーとして扱う<br>
+　　ROLE_ADMINを管理者ユーザーとして扱う<br><br>
 
-### 3-1-7.権限エラー画面
-`mobileorder-react/src/pages/AccessDeniedPage.jsx`<br>
-権限のないURLにアクセスしたときに表示する権限エラー画面を扱う<br>
-権限に合わない画面が表示されないようにしつつ、ユーザーに適切な画面へ戻る導線を出す
+- 一般ユーザーの場合<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　一般ユーザー用画面を表示する<br>
+　　管理者ユーザー用画面へアクセスした場合は権限エラー画面を表示する<br><br>
 
-React側でも画面を制御しているが、Java側のSpring SecurityでもAPIアクセスを制限している<br>
-画面側とAPI側の両方で制御することで、見た目だけではなく処理としても権限を守る
+- 管理者ユーザーの場合<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　管理者ユーザー用画面を表示する<br>
+　　一般ユーザー用画面へアクセスした場合は権限エラー画面を表示する<br><br>
 
-### 3-1-7-1.権限エラー画面 練習問題3-1-7-1
-`問題`<br>
-管理者ユーザーでログインしている状態で権限エラー画面を表示した場合に、<br>
-商品管理画面へ戻れるような処理を考えてみましょう。
+- ここで確認すること<br>
+　画面側ではisUser、isAdminを使って表示可否を分けている<br>
+　API側ではSpring Securityでアクセス権限を分けている<br><br>
 
-`要件`<br>
-1.管理者ユーザーで権限エラー画面を表示した場合は「商品管理へ戻る」ボタンを表示する<br>
-2.管理者ユーザーの戻り先は「/admin/products」とする<br>
-3.Appコンポーネント側でログイン中のユーザーの権限を見て、戻り先とボタン文言を決める<br>
-4.AccessDeniedPageコンポーネント側は渡された戻り先とボタン文言を表示するだけにする
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/App.jsx<br>
+  <br>
+  Java側<br>
+　entity/Role.java<br>
 
-### 3-1-7-2.権限エラー画面 練習問題3-1-7-2
-`問題`<br>
-管理者ユーザーでログインしている状態で「/account」にアクセスした場合、<br>
-アカウント管理画面ではなく権限エラー画面を表示するように処理を考えてみましょう。
+### 権限エラー画面
+権限エラー画面では、ログイン中ユーザーが利用できない画面へアクセスした場合の表示を行う<br>
 
-`要件`<br>
-1.「/account」は一般ユーザー用の画面のURLとして扱う<br>
-2.一般ユーザーの場合はアカウント管理画面を表示する<br>
-3.管理者ユーザーの場合は権限エラー画面を表示する
+- 権限のないURLへアクセスした場合<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　現在のURLとログイン中ユーザーの権限を確認する<br>
+　　表示できる画面ではない場合、AccessDeniedPageコンポーネントを表示する<br><br>
+　`AccessDeniedPageコンポーネント`<br>
+　　この画面を利用する権限がないことを表示する<br><br>
+  Java側<br>
+　`SecurityConfig`<br>
+　　APIのアクセス権限を確認する<br>
+　　権限がないAPIへのアクセスは拒否する<br><br>
 
-### 3-1-7-3.権限エラー画面 練習問題3-1-7-3
-`問題`<br>
-権限エラー画面に表示されている「この画面を利用する権限がありません。」<br>
-の文字色を変更してみましょう。また「この画面を利用する権限がありません。」の<br>
-文言の下に改行を入れてみましょう。
+- ここで確認すること<br>
+　React側は画面表示を制御している<br>
+　Java側はAPIアクセスを制御している<br><br>
 
-`要件`<br>
-1.文字色は「#ec4899」にする<br>
-2.page-head内のalertクラスに対してCSSを指定する<br>
-3.「この画面を利用する権限がありません。」の文言の下に改行を入れる
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/App.jsx<br>
+　mobileorder-react/src/pages/AccessDeniedPage.jsx<br>
+  <br>
+  Java側<br>
+　config/SecurityConfig.java<br>
 
-### 3-1-8.必要なデータの読み込み
+### 必要なデータの読み込み
+必要なデータの読み込みでは、表示する画面に応じて商品、注文、評価、ユーザー情報などを取得する<br>
 
-App.jsxでは、現在のURLに応じて必要なデータを読み込んでいる。<br>
-例えば、商品選択画面では商品一覧を取得し、注文履歴画面では注文一覧を取得する。<br>
-この処理により、各画面コンポーネントは表示に必要なデータをpropsとして受け取るだけで済む。<br>
+- 画面表示時<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　routeとauth.roleを確認する<br>
+　　表示する画面に必要な読み込み処理を実行する<br>
+　　取得したデータをstateに保存する<br>
+　　画面コンポーネントへpropsで渡す<br>
+  <br>
+  Java側<br>
+　`Controller`<br>
+　　APIリクエストを受け取る<br>
+　　Serviceへ処理を渡す<br>
+　`Service`<br>
+　　必要なデータを取得する<br>
+　　DTOに変換してReact側へ返す<br><br>
 
-`主なデータ読み込みの例`<br>
-商品一覧を取得する<br>
-注文一覧を取得する<br>
-注文評価を取得する<br>
-アカウント情報を取得する<br>
-管理者用の注文一覧を取得する<br>
-管理者用の分析データを取得する<br>
-ユーザー一覧と管理番号一覧を取得する
+- ここで確認すること<br>
+　Appコンポーネントが各画面に必要なデータをまとめて取得している<br>
+　各画面コンポーネントは受け取ったデータを表示する役割が中心になる<br><br>
 
-### 3-1-9.共通ヘッダー
-`mobileorder-react/src/components/Header.jsx`<br>
-画面上部のナビゲーションを表示する共通部品<br>
-ログイン中ユーザーが一般ユーザーか管理者ユーザーかによって、表示するメニューを切り替える<br>
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/App.jsx<br>
+  <br>
+  Java側<br>
+　controller/ProductController.java<br>
+　controller/OrderController.java<br>
+　controller/ProductReviewController.java<br>
+　controller/AnalyticsController.java<br>
+　controller/AdminUserController.java<br>
 
-`一般ユーザーの場合`<br>
-商品選択、注文状況、注文履歴、注文評価、アカウントを表示する<br>
-`管理者ユーザーの場合`<br>
-商品管理、注文状況、注文評価、注文分析、ユーザー管理を表示する
+### 共通ヘッダー
+共通ヘッダーでは、ログイン中ユーザーに応じたメニューを表示する<br>
 
-### 3-1-9-1.共通ヘッダー 練習問題3-1-9-1
-`問題`<br>
-共通ヘッダーのログイン中のユーザー名の表示において、<br>
-ユーザーの権限に応じて文字色を切り替えてみましょう。
+- 画面表示時<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　Headerコンポーネントへauth、route、画面遷移処理、ログアウト処理を渡す<br>
+　`Headerコンポーネント`<br>
+　　auth.roleを確認する<br>
+　　一般ユーザー用メニュー、管理者ユーザー用メニューを切り替える<br>
+　　routeを見て現在表示中のメニューを選択状態にする<br><br>
 
-`要件`<br>
-1. 一般ユーザーでログインしている場合はユーザー名の文字色に<br>
-   「#2563eb」を指定する<br>
-2. 管理者ユーザーでログインしている場合はユーザー名の文字色に<br>
-   「#f97316」を指定する
+- ここで確認すること<br>
+　ヘッダーは全画面共通で表示している<br>
+　表示するメニューはログイン中ユーザーの権限で変わる<br><br>
 
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/components/Header.jsx<br>
+　mobileorder-react/src/App.jsx<br>
 
-### 3-1-10.確認モーダル
+### 確認モーダル
+確認モーダルでは、削除やログアウトなどの重要操作の前に確認を行う<br>
 
-`mobileorder-react/src/components/ConfirmModal.jsx`<br>
-削除や登録などの重要な操作前に確認用のモーダルを出す共通部品<br>
+- 確認が必要な操作を押した場合<br>
+  React側<br>
+　画面コンポーネント:<br>
+　　確認したい内容をAppコンポーネントへ渡す<br>
+　`Appコンポーネント`<br>
+　　showConfirmを実行する<br>
+　　確認モーダルの内容をconfirmModalに保存する<br>
+　　ConfirmModalコンポーネントへmodal情報を渡す<br>
+　`ConfirmModalコンポーネント`<br>
+　　タイトル、本文、確認ボタンを表示する<br><br>
 
-`mobileorder-react/src/App.jsx`<br>
-画面ごとに別々のモーダルを作らず、ひとつの確認モーダルを管理<br>
+- 確認ボタンを押した場合<br>
+  React側<br>
+　`ConfirmModalコンポーネント`<br>
+　　確定処理を呼び出す<br>
+　`Appコンポーネント`<br>
+　　登録、削除、キャンセルなどの本処理を実行する<br><br>
 
-`確認モーダルの機能`<br>
-タイトル、本文、確認ボタンの文言、危険操作用の見た目を切り替えられる。
+- ここで確認すること<br>
+　確認モーダルは全画面共通で使っている<br>
+　各画面でモーダルを個別に作らず、Appコンポーネントでまとめて管理している<br><br>
 
-`利用する場面`<br>
-商品削除、ログアウト、注文評価登録、管理者登録キャンセルなど
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/components/ConfirmModal.jsx<br>
+　mobileorder-react/src/App.jsx<br>
 
-### 3-1-11.API通信の共通処理
-`mobileorder-react/src/api/client.js`<br>
-React側からJava側のAPIを呼び出すための共通処理<br>
-apiRequestを使うことで、各画面で毎回同じfetch処理を書かなくて済む<br>
+### API通信の共通処理
+API通信の共通処理では、React側からJava側へリクエストを送る処理をまとめている<br>
 
-`client.jsの主な役割`<br>
-Cookieを含めてAPI通信する<br>
-JSON送信用のヘッダーを共通化する<br>
-APIがエラーを返したときにメッセージを取り出す<br>
-204 No Content の場合はnullを返す<br>
-正常時はJSONを返す<br>
+- APIを呼び出す場合<br>
+  React側<br>
+　画面コンポーネント、またはAppコンポーネント<br>
+　　apiRequestを呼び出す<br>
+　`apiRequest`<br>
+　　fetchでJava側APIへリクエスト送信する<br>
+　　Cookieを含めて通信する<br>
+　　正常時はJSONを返す<br>
+　　204 No Contentの場合はnullを返す<br>
+　　エラー時はmessageを読み取ってErrorとして扱う<br><br>
 
-### 3-1-12.エラーレスポンス共通化
-`controller/ApiExceptionHandler.java`<br>
-Java側で発生した例外をAPIレスポンスとして返すための共通処理<br>
-入力エラーや不正な操作があったときに、React側へ messageを返す<br>
+- ここで確認すること<br>
+　API通信の共通処理はclient.jsにまとめている<br>
+　各画面で同じfetch処理を何度も書かないようにしている<br><br>
 
-`mobileorder-react/src/api/client.js`<br>
-apiRequestが、このmessageを読み取って画面に表示できる<br>
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/api/client.js<br>
 
-### 3-1-13.SpringSecurityの基本設定
-`config/SecurityConfig.java`<br>
-Java側の認証と認可の仕組みを設定するファイル<br>
-どのAPIを誰が使えるか、ログインとログアウトをどう処理するかを定義している<br>
+### エラーレスポンス共通化
+エラーレスポンス共通化では、Java側で発生したエラーをReact側で表示しやすい形に変換する<br>
 
-`SecurityConfigの主な役割`<br>
-/api/loginは未ログインでも利用できるようにする<br>
-/api/auth/statusは未ログインでも利用できるようにする<br>
-/api/productsは一般ユーザーだけ利用できるようにする<br>
-/api/admin/**は管理者ユーザーだけ利用できるようにする<br>
-/api/orders/**と/api/reviews/**は一般ユーザーだけ利用できるようにする<br>
-/api/accountはログイン済みユーザーだけ利用できるようにする<br>
-ログイン成功時はJSONを返す<br>
-ログアウト成功時は204を返す<br>
-パスワードをBCryptで扱う
+- Java側でエラーが発生した場合<br>
+  Java側<br>
+　`Service`<br>
+　　入力チェックエラーやIllegalArgumentExceptionが発生する<br>
+　`ApiExceptionHandler`<br>
+　　エラーを受け取る<br>
+　　messageを含むレスポンスに変換する<br>
+  <br>
+  React側<br>
+　`apiRequest`<br>
+　　messageを読み取る<br>
+　　Errorとして画面側へ渡す<br>
+　`画面コンポーネント:`<br>
+　　エラーメッセージを表示する<br><br>
 
-### 3-1-13-1.SpringSecurityの基本設定 練習問題3-1-13-1
-`問題`<br>
-SecurityConfigにおいて、「/api/account」には「ROLE_USER」の権限を<br>
-もつユーザーでログインしている状態のみアクセスできるようにしてみましょう。
+- ここで確認すること<br>
+　Java側のエラー文言をReact側で表示できる<br>
+　エラーレスポンスの形をApiExceptionHandlerで共通化している<br><br>
 
-`要件`<br>
-1. 「/api/account」へのアクセス権限を「ROLE_USER」のみアクセス可能な設定に変更する
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/api/client.js<br>
+  <br>
+  Java側<br>
+　controller/ApiExceptionHandler.java<br>
 
-### 3-1-14.ロール定義
-`entity/Role.java`<br>
-ユーザー権限を表すenum<br>
-このアプリでは、一般ユーザーと管理者ユーザーの2種類を扱う<br>
+### SpringSecurityの基本設定
+SpringSecurityの基本設定では、ログイン処理とAPIアクセス権限を管理する<br>
 
-`ユーザーの種類`<br>
-ROLE_USERは一般ユーザー<br>
-ROLE_ADMINは管理者ユーザー
+- ログインする場合<br>
+  React側<br>
+　`Appコンポーネント`<br>
+　　POST /api/loginでリクエスト送信する<br>
+  <br>
+  Java側<br>
+　`SecurityConfig`<br>
+　　/api/loginをログイン処理として扱う<br>
+　　AppUserDetailsServiceへユーザー検索を依頼する<br>
+　`AppUserDetailsService`<br>
+　　ユーザー名をもとにユーザー情報を取得する<br>
+　`SecurityConfig`<br>
+　　パスワードを確認する<br>
+　　ログインできるか判定する<br><br>
 
-`mobileorder-react/src/App.jsx`<br>
-APIから受け取った権限をもとにuserやadminとして画面を切り替える<br>
+- APIへアクセスする場合<br>
+  Java側<br>
+　`SecurityConfig`<br>
+　　requestMatchersでURLごとの権限を確認する<br>
+　　/api/admin/**は管理者ユーザーだけ利用できる<br>
+　　/api/orders/**や/api/reviews/**は一般ユーザーだけ利用できる<br><br>
 
-### 3-1-15.スター評価表示部品
-`mobileorder-react/src/components/RatingStars.jsx`<br>
-商品の平均評価をスターで表示する共通部品<br>
-商品選択画面や注文評価確認画面など、複数の画面で再利用する<br>
+- ここで確認すること<br>
+　Spring Securityはログイン処理とAPIアクセス制御を担当している<br>
+　画面表示だけでなく、Java側でも権限を確認している<br><br>
 
-評価値を受け取り、スターの表示、数値、レビュー件数をまとめて表示する<br>
+- 参照ファイル<br>
+  Java側<br>
+　config/SecurityConfig.java<br>
+　service/AppUserDetailsService.java<br>
 
-### 3-1-16.商品ビジュアル部品
-`mobileorder-react/src/components/ProductVisual.jsx`<br>
-商品カードで使う見た目の共通部品
+### 共通部品
+共通部品では、複数画面で使う表示やUIをまとめている<br>
 
-商品ごとのaccentを受け取り、色味の違う商品ビジュアルを表示する<br>
-商品選択画面と商品管理画面で再利用する
+- スター評価を表示する場合<br>
+  React側<br>
+　`RatingStarsコンポーネント`<br>
+　　評価値とレビュー件数を受け取る<br>
+　　スター、数値、レビュー件数を表示する<br><br>
 
-### 3-1-17.共通CSS
-`mobileorder-react/src/App.css`<br>
-画面全体の見た目を管理するCSSファイル<br>
-ボタン、スター評価など多くの画面で使うスタイルが定義されている
+- 商品ビジュアルを表示する場合<br>
+  React側<br>
+　`ProductVisualコンポーネント`<br>
+　　商品のaccentを受け取る<br>
+　　商品ごとの色味を画面に表示する<br><br>
 
-### 3-1-18.アプリ全体のイメージ
-Reactアプリの中心がAppコンポーネントである<br>
-URLによって表示画面が切り替わる<br>
-ユーザーに応じて利用できる画面が変わる<br>
-ユーザーに応じてヘッダーのメニューが変わる<br>
-重要操作は共通の確認モーダルで確認する<br>
-API通信はapiRequestにまとめている<br>
-Java側でもSpring SecurityでAPIアクセスを制御している<br>
-エラー時はJava側のmessageをReact側で表示できる<br>
+- ここで確認すること<br>
+　複数画面で使う表示は共通部品として切り出している<br>
+　商品選択画面、商品管理画面、注文評価画面などで再利用できる<br><br>
+
+- 参照ファイル<br>
+  React側<br>
+　mobileorder-react/src/components/RatingStars.jsx<br>
+　mobileorder-react/src/components/ProductVisual.jsx<br>
