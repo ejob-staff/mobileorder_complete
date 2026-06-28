@@ -22,11 +22,11 @@
 　DB_PASSWORD -- DBパスワード<br>
 　DB_ROOT_PASSWORD -- rootユーザーのパスワード<br>
 　DB_CONTAINER_NAME -- DBコンテナ名<br>
-　APP_PORT -- Spring Bootの起動ポート<br>
+　APP_PORT -- Spring Bootの起動ポート<br><br>
 
 - ここで確認すること<br>
 　本番環境では推測されにくいパスワードを設定する<br>
-　.envはGit管理に含めない<br>
+　.envはGit管理に含めない<br><br>
 
 - 参照ファイル<br>
 　.env.example<br>
@@ -40,11 +40,11 @@
 　mysql:8.4イメージを使用する<br>
 　database-volumeにDBデータを保存する<br>
 　TZはAsia/Tokyoに設定する<br>
-　DB_PORTでホスト側ポートを指定する<br>
+　DB_PORTでホスト側ポートを指定する<br><br>
 
 - ここで確認すること<br>
 　DB_NAME、DB_USERNAME、DB_PASSWORDがapplication.ymlと一致している必要がある<br>
-　初回起動時はDataInitializerが初期データを登録する<br>
+　初回起動時はDataInitializerが初期データを登録する<br><br>
 
 - 参照ファイル<br>
 　docker-compose.yml<br>
@@ -59,11 +59,11 @@
 　datasource.usernameにDB_USERNAMEを使用する<br>
 　datasource.passwordにDB_PASSWORDを使用する<br>
 　server.portにAPP_PORTを使用する<br>
-　spring.jpa.hibernate.ddl-autoはupdateを使用する<br>
+　spring.jpa.hibernate.ddl-autoはupdateを使用する<br><br>
 
 - ここで確認すること<br>
 　本番環境ではDB接続先、ポート、認証情報が正しいか確認する<br>
-　ddl-auto=updateの扱いは運用方針に合わせて確認する<br>
+　ddl-auto=updateの扱いは運用方針に合わせて確認する<br><br>
 
 - 参照ファイル<br>
 　src/main/resources/application.yml<br>
@@ -76,11 +76,11 @@
 　mobileorder-react/package.jsonを確認する<br>
 　npm installで依存関係を準備する<br>
 　npm run buildで本番用ファイルを作成する<br>
-　npm run previewでビルド結果を確認できる<br>
+　npm run previewでビルド結果を確認できる<br><br>
 
 - ここで確認すること<br>
 　React側のAPI呼び出し先が本番環境で正しく解決できるか確認する<br>
-　ログイン状態はCookieを使うため、同一オリジンやプロキシ設定も確認する<br>
+　ログイン状態はCookieを使うため、同一オリジンやプロキシ設定も確認する<br><br>
 
 - 参照ファイル<br>
 　mobileorder-react/package.json<br>

@@ -44,7 +44,7 @@
 　Spring Data JPA<br>
 　Validation<br>
 　MySQL Connector/J<br>
-　OpenJDK 21<br>
+　OpenJDK 21<br><br>
 
 - 参照ファイル<br>
 　pom.xml<br>
@@ -63,7 +63,7 @@
 - 使用技術<br>
 　React<br>
 　React Router<br>
-　Vite<br>
+　Vite<br><br>
 
 - 参照ファイル<br>
 　mobileorder-react/package.json<br>
@@ -101,7 +101,7 @@
 　docker-compose.ymlのDBポートを確認する<br>
 　application.ymlが.envを読み込むことを確認する<br>
 　Spring Bootのserver.portをAPP_PORTで指定する<br>
-　React側の依存関係をnpm installで準備する<br>
+　React側の依存関係をnpm installで準備する<br><br>
 
 - ここで確認すること<br>
 　.env.exampleはサンプルなので、実際の.envには任意のパスワードを設定する<br>

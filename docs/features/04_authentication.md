@@ -31,11 +31,11 @@
 　　パスワードの入力欄を表示する<br>
 　　パスワード表示 / 非表示ボタンを表示する<br>
 　　新規アカウント作成画面へのボタンを表示する<br>
-　　パスワード再設定画面へのボタンを表示する<br>
+　　パスワード再設定画面へのボタンを表示する<br><br>
 
 - ここで確認すること<br>
 　ログイン画面は未ログイン状態で表示する<br>
-　パスワードはshowPasswordで表示 / 非表示を切り替えている<br>
+　パスワードはshowPasswordで表示 / 非表示を切り替えている<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -50,17 +50,17 @@
 　　formにusernameとpasswordを保存する<br>
 　　errorにログイン失敗時のメッセージを保存する<br>
 　　showPasswordにパスワード表示状態を保存する<br>
-　　updateFormで入力値を更新する<br>
+　　updateFormで入力値を更新する<br><br>
 
 - ログインボタンを押した場合<br>
   React側<br>
 　`LoginPageコンポーネント`<br>
 　　loginを実行する<br>
-　　onLoginへformを渡す<br>
+　　onLoginへformを渡す<br><br>
 
 - ここで確認すること<br>
 　入力値はformとしてまとめて管理している<br>
-　画面固有のエラーはLoginPageのerrorに保存している<br>
+　画面固有のエラーはLoginPageのerrorに保存している<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -78,19 +78,19 @@
 　　URLSearchParamsでフォームデータを作成する<br>
 　　POST /api/loginでリクエスト送信<br>
 　　ログイン成功時はloadAuthを実行する<br>
-　　ログイン状態をauthに保存する<br>
+　　ログイン状態をauthに保存する<br><br>
 
 - ログインに失敗した場合<br>
   React側<br>
 　`Appコンポーネント`<br>
 　　POST /api/auth/login-checkで利用停止中ユーザーか確認する<br>
 　　利用停止中の場合は専用メッセージを表示する<br>
-　　それ以外の場合はユーザー名またはパスワード違いとして扱う<br>
+　　それ以外の場合はユーザー名またはパスワード違いとして扱う<br><br>
 
 - ここで確認すること<br>
 　ログイン処理そのものはSpringSecurityが行っている<br>
 　ログイン成功後にGET /api/auth/statusでユーザー情報を取得している<br>
-　ユーザーの利用停止 / 利用再開を切り替えるときは確認モーダルを表示する（React側のログイン処理 練習問題4-1-4-1）<br>
+　ユーザーの利用停止 / 利用再開を切り替えるときは確認モーダルを表示する（React側のログイン処理 練習問題4-1-4-1）<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -109,11 +109,11 @@
 　　ログイン失敗時は401を返す<br>
 　　/api/logoutをログアウト処理用URLに設定する<br>
 　　BCryptPasswordEncoderをPasswordEncoderとして使用する<br>
-　　AppUserDetailsServiceを認証ユーザー取得処理として使用する<br>
+　　AppUserDetailsServiceを認証ユーザー取得処理として使用する<br><br>
 
 - ここで確認すること<br>
 　/api/login、/api/logoutはSpringSecurityの機能で処理している<br>
-　/api/admin/**は管理者ユーザー、/api/orders/**や/api/reviews/**は一般ユーザーに制限している<br>
+　/api/admin/**は管理者ユーザー、/api/orders/**や/api/reviews/**は一般ユーザーに制限している<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -129,11 +129,11 @@
 　　app_userテーブルからユーザー名で検索する<br>
 　　ユーザーが存在しない場合はUsernameNotFoundExceptionにする<br>
 　　パスワード、権限、利用状態をUserDetailsへ設定する<br>
-　　利用停止中ユーザーはdisabledとして扱う<br>
+　　利用停止中ユーザーはdisabledとして扱う<br><br>
 
 - ここで確認すること<br>
 　ユーザーの利用状態はSpringSecurityのログイン可否に影響する<br>
-　権限はROLE_USERまたはROLE_ADMINとして渡している<br>
+　権限はROLE_USERまたはROLE_ADMINとして渡している<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -154,17 +154,17 @@
   React側<br>
 　`Appコンポーネント`<br>
 　　authenticatedがtrueの場合はauthに保存する<br>
-　　authenticatedがfalseの場合はauthをnullにする<br>
+　　authenticatedがfalseの場合はauthをnullにする<br><br>
 
 - 返す情報<br>
 　authenticated -- ログイン済みかどうか<br>
 　username -- ログイン中のユーザー名<br>
 　role -- React側で使う権限<br>
-　displayName -- 画面表示用の名前<br>
+　displayName -- 画面表示用の名前<br><br>
 
 - ここで確認すること<br>
 　Java側のROLE_ADMINはReact側でadminとして扱う<br>
-　Java側のROLE_USERはReact側でuserとして扱う<br>
+　Java側のROLE_USERはReact側でuserとして扱う<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -190,11 +190,11 @@
   <br>
   React側<br>
 　`Appコンポーネント`<br>
-　　matchedがtrueでenabledがfalseの場合は利用停止中メッセージを表示する<br>
+　　matchedがtrueでenabledがfalseの場合は利用停止中メッセージを表示する<br><br>
 
 - ここで確認すること<br>
 　SpringSecurityのログイン失敗だけでは利用停止中かどうかを画面側で判別しづらい<br>
-　login-checkは専用メッセージ表示のために使用している<br>
+　login-checkは専用メッセージ表示のために使用している<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -217,11 +217,11 @@
 　　入力値をformとしてstateで管理する<br>
 　　登録ボタン押下時にonSignupを呼び出す<br>
 　　登録成功時はログイン画面へ戻る<br>
-　　登録失敗時はerrorにメッセージを表示する<br>
+　　登録失敗時はerrorにメッセージを表示する<br><br>
 
 - ここで確認すること<br>
 　ユーザー管理番号以外の入力欄にもplaceholderを指定する（新規アカウント作成画面 練習問題4-1-10-1）<br>
-　登録完了後はApp側のsignup処理を経由してログイン画面へ遷移する<br>
+　登録完了後はApp側のsignup処理を経由してログイン画面へ遷移する<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -244,11 +244,11 @@
 　　ユーザー管理番号が未使用か確認する<br>
 　　パスワードをBCryptで暗号化する<br>
 　　ROLE_USERのAppUserを保存する<br>
-　　ユーザー管理番号を使用済みにする<br>
+　　ユーザー管理番号を使用済みにする<br><br>
 
 - ここで確認すること<br>
 　新規アカウント作成で使えるのはUSER-CODEから始まる未使用の管理番号だけ<br>
-　ユーザー名は重複登録できない<br>
+　ユーザー名は重複登録できない<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -268,11 +268,11 @@
 　　usernameに使用したユーザー名を保持する<br>
 　　usedに使用済みかどうかを保持する<br>
 　　createdAtに発行日時を保持する<br>
-　　usedAtに使用日時を保持する<br>
+　　usedAtに使用日時を保持する<br><br>
 
 - ここで確認すること<br>
 　一般ユーザーの新規登録では「USER-CODE」を使用する<br>
-　管理者ユーザー登録では「ADMIN-CODE」を使用する<br>
+　管理者ユーザー登録では「ADMIN-CODE」を使用する<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -292,11 +292,11 @@
 　　入力値をformとしてstateで管理する<br>
 　　再設定ボタン押下時にonPasswordResetを呼び出す<br>
 　　再設定成功時はログイン画面へ戻る<br>
-　　再設定失敗時はerrorにメッセージを表示する<br>
+　　再設定失敗時はerrorにメッセージを表示する<br><br>
 
 - ここで確認すること<br>
 　ユーザー管理番号以外の入力欄にもplaceholderを指定する（パスワード再設定画面 練習問題4-1-14-1）<br>
-　ユーザー管理番号とユーザー名が一致する場合だけパスワードを変更できる<br>
+　ユーザー管理番号とユーザー名が一致する場合だけパスワードを変更できる<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -317,11 +317,11 @@
 　　ユーザー管理番号が使用済みか確認する<br>
 　　ユーザー管理番号に紐づくユーザー名と入力されたユーザー名が一致するか確認する<br>
 　　対象ユーザーを検索する<br>
-　　新しいパスワードをBCryptで暗号化して保存する<br>
+　　新しいパスワードをBCryptで暗号化して保存する<br><br>
 
 - ここで確認すること<br>
 　未使用の管理番号ではパスワード再設定できない<br>
-　管理番号とユーザー名の組み合わせが一致する必要がある<br>
+　管理番号とユーザー名の組み合わせが一致する必要がある<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -342,11 +342,11 @@
 　　確定時にPOST /api/logoutを送信する<br>
 　　authをnullにする<br>
 　　cartを空にする<br>
-　　/loginへ遷移する<br>
+　　/loginへ遷移する<br><br>
 
 - ここで確認すること<br>
 　ログアウト前に共通の確認モーダルを使っている<br>
-　ログアウト後はカート情報もリセットしている<br>
+　ログアウト後はカート情報もリセットしている<br><br>
 
 - 参照ファイル<br>
   React側<br>
