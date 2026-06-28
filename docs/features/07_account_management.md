@@ -1,9 +1,9 @@
 ## 7-1.アカウント管理機能
 ### アカウント管理機能とは
-　ログイン中ユーザー本人のアカウント情報を確認・更新する<br>
+　ログイン中のユーザー自身のアカウント情報を確認・更新する<br>
 
 ### 目次
-- [アカウント管理とは](#アカウント管理機能とは)
+- [アカウント管理機能とは](#アカウント管理機能とは)
 - [アカウント情報画面](#アカウント情報画面)
 - [アカウント情報の取得](#アカウント情報の取得)
 - [アカウント情報取得API](#アカウント情報取得API)
@@ -19,7 +19,7 @@
 - [アカウント管理機能のまとめ](#アカウント管理機能のまとめ)
 
 ### アカウント情報画面
-　ログイン中ユーザーの情報表示とパスワード変更を行う<br>
+　ログイン中のユーザー情報の表示とパスワード変更を行う<br>
 
 - /accountにアクセスした場合<br>
   React側<br>
@@ -45,7 +45,7 @@
 　mobileorder-react/src/pages/AccountPage.jsx<br>
 
 ### アカウント情報の取得
-アカウント情報の取得では、ログイン中ユーザー本人の情報をAPIから取得する<br>
+アカウント情報の取得では、ログイン中のユーザー自身の情報をAPIから取得する<br>
 
 - /accountを表示した場合<br>
   React側<br>
@@ -57,12 +57,12 @@
   <br>
   Java側<br>
 　`AccountProfileController`<br>
-　　Principalからログイン中ユーザー名を取得する<br>
-　　AccountProfileServiceでログイン中ユーザーの情報を取得する<br>
+　　Principalからログインユーザー名を取得する<br>
+　　AccountProfileServiceでログイン中のユーザー情報を取得する<br>
 　　AccountResponseに変換してReact側へ返す<br><br>
 
 - ここで確認すること<br>
-　アカウント情報はログイン中ユーザー名をもとに取得する<br>
+　アカウント情報はログインユーザー名をもとに取得する<br>
 　ユーザー管理番号はUserManagementCodeRepositoryから取得する<br><br>
 
 - 参照ファイル<br>
@@ -74,12 +74,12 @@
 　service/AccountProfileService.java<br>
 
 ### アカウント情報取得API
-アカウント情報取得APIでは、ログイン中ユーザーのアカウント情報を返す<br>
+アカウント情報取得APIでは、ログイン中のユーザー自身のアカウント情報を返す<br>
 
 - GET /api/accountを呼び出した場合<br>
   Java側<br>
 　`AccountProfileController`<br>
-　　Principalからログイン中ユーザー名を取得する<br>
+　　Principalからログインユーザー名を取得する<br>
 　　AccountProfileServiceへアカウント情報取得処理を依頼する<br>
 　　取得した情報をAccountResponseとして返す<br>
 　`AccountProfileService`<br>
@@ -231,23 +231,23 @@
 　mobileorder-react/src/pages/AccountPage.jsx<br>
 
 ### アカウント更新API
-アカウント更新APIでは、ログイン中ユーザー本人のパスワードを変更する<br>
+アカウント更新APIでは、ログイン中のユーザー自身のパスワードを変更する<br>
 
 - PUT /api/accountを呼び出した場合<br>
   Java側<br>
 　`AccountProfileController`<br>
 　　AccountUpdateRequestを受け取る<br>
-　　Principalからログイン中ユーザー名を取得する<br>
+　　Principalからログインユーザー名を取得する<br>
 　　AccountProfileServiceへパスワード変更処理を依頼する<br>
 　　更新後のアカウント情報をAccountResponseとして返す<br>
 　`AccountProfileService`<br>
 　　パスワードとパスワード確認用が一致しているか確認する<br>
-　　ログイン中ユーザー名をもとにユーザーを検索する<br>
+　　ログインユーザー名をもとにユーザーを検索する<br>
 　　新しいパスワードをBCryptで暗号化する<br>
 　　ユーザーのパスワードを更新する<br><br>
 
 - ここで確認すること<br>
-　更新対象はログイン中ユーザー自身のアカウントになる<br>
+　更新対象はログイン中のユーザー自身のアカウントになる<br>
 　Java側でもパスワードの一致確認を行う<br><br>
 
 - 参照ファイル<br>
@@ -285,7 +285,7 @@
 　Java側で返したmessageはapiRequestを通して画面に表示する<br>
 
 ### アカウント管理機能のまとめ
-ログイン中ユーザーのアカウント情報を表示できる<br>
+ログイン中のユーザー自身のアカウント情報を表示できる<br>
 ユーザー管理番号とユーザー名を確認できる<br>
 パスワードは伏せ字で表示される<br>
 パスワード変更フォームを表示できる<br>
