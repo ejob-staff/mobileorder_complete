@@ -1,4 +1,8 @@
-## 3章.共通基盤と画面遷移
+## 3-1.共通基盤と画面遷移
+### 共通基盤と画面遷移とは
+　システム全体で共通して利用する機能や仕組みをまとめたもの
+
+### 目次
 - [設計資料](#設計資料)
 - [React側ソース](#React側ソース)
 - [Java側ソース](#Java側ソース)
@@ -34,6 +38,8 @@
 　　11_user_management.md ---- ユーザー管理機能<br>
 　　12_order_analytics.md ---- 注文分析機能<br>
 　　13_initial_data.md ------- 初期データ登録<br>
+　　14_complete_repository.md - 完成版のリポジトリ<br>
+　　15_production_deploy.md -- 本番環境へのデプロイ<br>
 
 ### React側ソース
 `mobileorder-react/src/`<br>
@@ -207,7 +213,7 @@
 　dto/AuthStatusResponse.java<br>
 
 ### URLと画面遷移の管理
-URLと画面遷移の管理では、現在のURLを見て表示する画面を決める<br>
+　URLと画面遷移の管理では、現在のURLを見て表示する画面を決める<br>
 
 - URLを確認する場合<br>
   React側<br>
@@ -230,7 +236,7 @@ URLと画面遷移の管理では、現在のURLを見て表示する画面を�
 　mobileorder-react/src/App.jsx<br>
 
 ### ユーザー権限による画面分岐
-ユーザー権限による画面分岐では、一般ユーザーと管理者ユーザーで表示できる画面を分ける<br>
+　ユーザー権限による画面分岐では、一般ユーザーと管理者ユーザーで表示できる画面を分ける<br>
 
 - ログイン状態を確認した後<br>
   React側<br>
@@ -268,7 +274,7 @@ URLと画面遷移の管理では、現在のURLを見て表示する画面を�
 　entity/Role.java<br>
 
 ### 権限エラー画面
-権限エラー画面では、ログイン中ユーザーが利用できない画面へアクセスした場合の表示を行う<br>
+　ログイン中ユーザーが利用できない画面へアクセスした場合の表示を行う<br>
 
 - 権限のないURLへアクセスした場合<br>
   React側<br>
@@ -295,7 +301,7 @@ URLと画面遷移の管理では、現在のURLを見て表示する画面を�
 　config/SecurityConfig.java<br>
 
 ### 必要なデータの読み込み
-必要なデータの読み込みでは、表示する画面に応じて商品、注文、評価、ユーザー情報などを取得する<br>
+　表示する画面に応じて商品、注文、評価、ユーザー情報などを取得する<br>
 
 - 画面表示時<br>
   React側<br>
@@ -329,7 +335,7 @@ URLと画面遷移の管理では、現在のURLを見て表示する画面を�
 　controller/AdminUserController.java<br>
 
 ### 共通ヘッダー
-共通ヘッダーでは、ログイン中ユーザーに応じたメニューを表示する<br>
+　共通ヘッダーでは、ログイン中ユーザーに応じたメニューを表示する<br>
 
 - 画面表示時<br>
   React側<br>
@@ -350,7 +356,7 @@ URLと画面遷移の管理では、現在のURLを見て表示する画面を�
 　mobileorder-react/src/App.jsx<br>
 
 ### 確認モーダル
-確認モーダルでは、削除やログアウトなどの重要操作の前に確認を行う<br>
+　確認モーダルでは、削除やログアウトなどの重要操作の前に確認を行う<br>
 
 - 確認が必要な操作を押した場合<br>
   React側<br>
@@ -380,7 +386,7 @@ URLと画面遷移の管理では、現在のURLを見て表示する画面を�
 　mobileorder-react/src/App.jsx<br>
 
 ### API通信の共通処理
-API通信の共通処理では、React側からJava側へリクエストを送る処理をまとめている<br>
+　API通信の共通処理では、React側からJava側へリクエストを送る処理をまとめている<br>
 
 - APIを呼び出す場合<br>
   React側<br>
@@ -402,7 +408,7 @@ API通信の共通処理では、React側からJava側へリクエストを送�
 　mobileorder-react/src/api/client.js<br>
 
 ### エラーレスポンス共通化
-エラーレスポンス共通化では、Java側で発生したエラーをReact側で表示しやすい形に変換する<br>
+　エラーレスポンス共通化では、Java側で発生したエラーをReact側で表示しやすい形に変換する<br>
 
 - Java側でエラーが発生した場合<br>
   Java側<br>
@@ -431,7 +437,7 @@ API通信の共通処理では、React側からJava側へリクエストを送�
 　controller/ApiExceptionHandler.java<br>
 
 ### SpringSecurityの基本設定
-SpringSecurityの基本設定では、ログイン処理とAPIアクセス権限を管理する<br>
+　SpringSecurityの基本設定では、ログイン処理とAPIアクセス権限を管理する<br>
 
 - ログインする場合<br>
   React側<br>
@@ -465,7 +471,7 @@ SpringSecurityの基本設定では、ログイン処理とAPIアクセス権限
 　service/AppUserDetailsService.java<br>
 
 ### 共通部品
-共通部品では、複数画面で使う表示やUIをまとめている<br>
+　共通部品では、複数画面で使う表示やUIをまとめている<br>
 
 - スター評価を表示する場合<br>
   React側<br>
