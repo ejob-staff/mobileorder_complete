@@ -102,8 +102,12 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
                   </span>
                 </div>
                 <div className="product-action-section">
-                  <p>公開状態の設定</p>
+                  {/*公開設定の変更 練習問題8-1-11-1*/}
+                  {/*ボタンの横の見出しの文言を変更する*/}
+                  <p>公開設定の変更</p>
                   <div className="item-actions">
+                    {/*公開設定の変更 練習問題8-1-11-1*/}
+                    {/*確認用モーダルで「公開にする」ボタン押下時のみconfirmVariantに「danger」を指定する*/}
                     <button
                       className="admin-action-link"
                       type="button"
@@ -112,7 +116,7 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
                         message: product.published ?
                           '「非公開」に設定します。商品は公開されなくなりますが、よろしいでしょうか。' : '「公開」に設定します。商品が公開されますが、よろしいでしょうか。',
                         confirmText: product.published ? '非公開にする' : '公開にする',
-                        confirmVariant: 'danger',
+                        confirmVariant: product.published ? '' : 'danger',
                         onConfirm: () => onTogglePublished(product.id),
                       })}>
                       {product.published ? '非公開にする' : '公開にする'}
