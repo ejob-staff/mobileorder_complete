@@ -53,9 +53,9 @@ export default function ProductFormPage({ mode, product, onSubmit, onNavigate, o
   const submitProduct = async (event) => {
     event.preventDefault()
     onConfirm({
-      title: '編集反映の確認',
-      message: '商品情報を更新してもよろしいでしょうか。',
-      confirmText: '変更する',
+      title: isEdit ? '編集反映の確認' : '商品登録の確認',
+      message: isEdit ? '商品情報を更新してもよろしいでしょうか。' : '商品情報テーブルに新商品を登録してもよろしいでしょうか。',
+      confirmText: isEdit ? '変更する' : '登録する',
       confirmVariant: 'danger',
       onConfirm: async () => {
         await onSubmit({
