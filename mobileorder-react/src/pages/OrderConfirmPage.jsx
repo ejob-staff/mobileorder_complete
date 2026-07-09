@@ -90,7 +90,7 @@ export default function OrderConfirmPage({ cart, onChangeQuantity, onRemove, onS
       <section className="page-head">
         <p className="eyebrow">Confirm</p>
         <h1>注文確認</h1>
-        {/*注文確認画面 練習問題5-1-8-1*/}
+        {/*注文確認画面 練習問題5-1-14-1*/}
         {/*「内容と受け取り日時を確認して、注文を確定してみましょう。」に文言を変更*/}
         <p>内容と受け取り日時を確認して、注文を確定してみましょう。</p>
       </section>
