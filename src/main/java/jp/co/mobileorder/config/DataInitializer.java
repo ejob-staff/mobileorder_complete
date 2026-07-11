@@ -167,14 +167,36 @@ public class DataInitializer {
                         mobileOrderRepository.save(order);
                     }
 
-                    var cookingOrder = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), "user3", now.minusMinutes(18), now.plusMinutes(18), cake.getPrice());
-                    cookingOrder.addItem(new OrderItem(cake.getId(), cake.getName(), cake.getPrice(), 1));
-                    cookingOrder.updateStatus(OrderStatus.COOKING, null, null);
-                    mobileOrderRepository.save(cookingOrder);
+                    for (int i = 0; i < 4; i++) {
+                        var createdAt = now.minusMinutes(6 + (i * 4));
+                        var order = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), sampleUsers.get(i % 4), createdAt, now.plusMinutes(12 + (i * 8)), seasonal.getPrice() + drink.getPrice());
+                        order.addItem(new OrderItem(seasonal.getId(), seasonal.getName(), seasonal.getPrice(), 1));
+                        order.addItem(new OrderItem(drink.getId(), drink.getName(), drink.getPrice(), 1));
+                        mobileOrderRepository.save(order);
+                    }
 
-                    var pendingOrder = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), "user4", now.minusMinutes(8), now.plusMinutes(12), seasonal.getPrice());
-                    pendingOrder.addItem(new OrderItem(seasonal.getId(), seasonal.getName(), seasonal.getPrice(), 1));
-                    mobileOrderRepository.save(pendingOrder);
+                    for (int i = 0; i < 2; i++) {
+                        var createdAt = now.minusMinutes(18 + (i * 7));
+                        var order = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), sampleUsers.get((i + 2) % 4), createdAt, now.plusMinutes(18 + (i * 10)), cake.getPrice());
+                        order.addItem(new OrderItem(cake.getId(), cake.getName(), cake.getPrice(), 1));
+                        order.updateStatus(OrderStatus.COOKING, null, null);
+                        mobileOrderRepository.save(order);
+                    }
+
+                    var readyOrder = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), "user2", now.minusMinutes(28), now.plusMinutes(10), milkTea.getPrice());
+                    readyOrder.addItem(new OrderItem(milkTea.getId(), milkTea.getName(), milkTea.getPrice(), 1));
+                    readyOrder.updateStatus(OrderStatus.READY, null, null);
+                    mobileOrderRepository.save(readyOrder);
+
+                    var servedOrder = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), "user3", now.minusMinutes(36), now.minusMinutes(2), premium.getPrice());
+                    servedOrder.addItem(new OrderItem(premium.getId(), premium.getName(), premium.getPrice(), 1));
+                    servedOrder.updateStatus(OrderStatus.SERVED, null, null);
+                    mobileOrderRepository.save(servedOrder);
+
+                    var canceledOrder = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), "user4", now.minusMinutes(44), now.plusMinutes(22), seasonal.getPrice());
+                    canceledOrder.addItem(new OrderItem(seasonal.getId(), seasonal.getName(), seasonal.getPrice(), 1));
+                    canceledOrder.updateStatus(OrderStatus.CANCELED, "材料の在庫が不足したため、店舗側でキャンセルしました。", "admin");
+                    mobileOrderRepository.save(canceledOrder);
                 }
             }
 

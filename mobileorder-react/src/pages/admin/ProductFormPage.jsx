@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import ProductVisual from '../../components/ProductVisual.jsx'
 
+{/*商品登録画面 練習問題8-1-14-1*/}
+{/*価格と在庫数の初期値を0に設定する*/}
 const emptyProduct = {
   name: '',
   description: '',
   category: '季節限定',
-  price: '',
-  stock: '',
+  price: '0',
+  stock: '0',
   published: true,
   accent: 'berry',
 }
@@ -45,9 +47,11 @@ export default function ProductFormPage({ mode, product, onSubmit, onNavigate, o
     })
   }, [product])
 
+  {/*商品登録画面 練習問題8-1-14-1*/}
+  {/*ラジオボタンへの変更に伴いsetForm内の判定処理を修正*/}
   const updateForm = (event) => {
     const { name, value, type, checked } = event.target
-    setForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }))
+    setForm((current) => ({ ...current, [name]: name === 'published' ? value === 'true' : value }))
   }
 
   const submitProduct = async (event) => {
@@ -126,10 +130,18 @@ export default function ProductFormPage({ mode, product, onSubmit, onNavigate, o
           </label>
         </div>
 
-        <label className="check">
-          <input name="published" type="checkbox" checked={form.published} onChange={updateForm} />
-          公開する
-        </label>
+        {/*商品登録画面 練習問題8-1-14-1*/}
+        {/*「公開にする」と「非公開にする」のラジオボタンに変更する*/}
+        <div className="actions">
+          <label className="check">
+            <input name="published" type="radio" value="true" checked={form.published} onChange={updateForm} />
+            公開にする
+          </label>
+          <label className="check">
+            <input name="published" type="radio" value="false" checked={!form.published} onChange={updateForm} />
+            非公開にする
+          </label>
+        </div>
 
         <div className="form-actions">
           <button type="submit">{isEdit ? '編集を反映する' : '登録する'}</button>

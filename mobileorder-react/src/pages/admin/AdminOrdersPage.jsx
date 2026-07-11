@@ -139,7 +139,8 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
         <section className="admin-order-list">
           {filteredOrders.map((order) => {
             const form = forms[order.id] || { status: order.status, cancelReason: order.cancelReason || '' }
-            const changed = isFormChanged(order, form)
+            const isDisabled = (order.status === 'SERVED') || (order.status === 'CANCELED')
+            const changed = !isDisabled && isFormChanged(order, form)
             return (
               <article className="admin-order-card" key={order.id}>
                 <div className="order-status-head">
@@ -149,6 +150,8 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
                       <span>注文日時: {order.createdAt}</span>
                       <span>受取日時: {order.pickupAt}</span>
                       <span>お客様のユーザー名: {order.username}</span>
+                      <span>注文ステータス: {order.statusLabel}</span>
+                      <span>注文商品:</span>
                     </div>
                   </div>
                   <span className={`order-badge ${order.status.toLowerCase()}`}>{order.statusLabel}</span>
@@ -159,7 +162,6 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
                 )}
 
                 <section className="ordered-products">
-                  <h3>注文された商品</h3>
                   <ul className="order-items">
                     {order.items.map((item) => <li key={item.id}>{item.name} × {item.quantity}</li>)}
                   </ul>
@@ -181,6 +183,7 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
                           value={option.value}
                           checked={form.status === option.value}
                           onChange={(event) => updateForm(order.id, 'status', event.target.value)}
+                          disabled={isDisabled}
                         />
                         <span className={`order-badge ${option.value.toLowerCase()}`}>{option.label}</span>
                       </label>
@@ -200,7 +203,7 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
                 )}
 
                 <div className="actions">
-                  <button type="button" disabled={!changed} onClick={() => confirmUpdate(order)}>ステータスを更新</button>
+                  <button type="button" disabled={!changed || isDisabled} onClick={() => confirmUpdate(order)}>ステータスを更新</button>
                 </div>
               </article>
             )
