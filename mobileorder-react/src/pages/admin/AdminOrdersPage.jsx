@@ -139,7 +139,9 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
         <section className="admin-order-list">
           {filteredOrders.map((order) => {
             const form = forms[order.id] || { status: order.status, cancelReason: order.cancelReason || '' }
-            const isDisabled = (order.status === 'SERVED') || (order.status === 'CANCELED')
+            {/*注文ステータス 練習問題9-1-5-1*/}
+            {/*注文ステータスが「受取完了」のときにもラジオボタンを非活性にする */}
+            const isDisabled = (order.status === 'SERVED') || (order.status === 'RECEIVED') ||(order.status === 'CANCELED')
             const changed = !isDisabled && isFormChanged(order, form)
             return (
               <article className="admin-order-card" key={order.id}>
