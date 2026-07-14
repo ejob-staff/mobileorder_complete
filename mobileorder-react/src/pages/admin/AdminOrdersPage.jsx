@@ -57,9 +57,11 @@ const isFormChanged = (order, form) => {
     return true
   }
 
-  if (form.status === 'CANCELED') {
-    return (form.cancelReason || '') !== (order.cancelReason || '')
-  }
+  {/*ステータス変更判定 練習問題9-1-9-1*/}
+  {/*注文ステータスが「キャンセル」のときはフォームの入力状態に関わらず非活性になるので、下記の処理は不要。削除もしくはコメントアウトにする。*/}
+  // if (form.status === 'CANCELED') {
+  //   return (form.cancelReason || '') !== (order.cancelReason || '')
+  // }
 
   return false
 }
