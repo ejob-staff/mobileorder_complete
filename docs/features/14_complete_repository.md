@@ -85,8 +85,8 @@
 　08_product_management.md -- 商品管理機能<br>
 　09_order_management.md -- 注文対応管理機能<br>
 　10_review_management.md -- 注文評価確認機能<br>
-　11_user_management.md -- ユーザー管理機能<br>
-　12_order_analytics.md -- 注文分析機能<br>
+　11_order_analytics.md -- 注文分析機能<br>
+　12_user_management.md -- ユーザー管理機能<br>
 　13_initial_data.md -- 初期データ登録<br>
 　14_complete_repository.md -- 完成版のリポジトリ<br>
 　15_production_deploy.md -- 本番環境へのデプロイ<br>

@@ -24,8 +24,8 @@
 `docs/`<br>
 　01_requirements.md ---- 要件定義<br>
 　02_basic_design.md ---- 基本設計<br>
-　03_detail_design.md --- 詳細設計<br>
-　04_database_design.md - DB設計<br><br>
+　03_database_design.md - DB設計<br>
+　04_detail_design.md --- 詳細設計<br><br>
 　`features/`<br>
 　　03_common_foundation.md -- 共通基盤と画面遷移<br>
 　　04_authentication.md ----- 認証機能<br>
@@ -35,8 +35,8 @@
 　　08_product_management.md - 商品管理機能<br>
 　　09_order_management.md --- 注文対応管理機能<br>
 　　10_review_management.md -- 注文評価確認機能<br>
-　　11_user_management.md ---- ユーザー管理機能<br>
-　　12_order_analytics.md ---- 注文分析機能<br>
+　　11_order_analytics.md ---- 注文分析機能<br>
+　　12_user_management.md ---- ユーザー管理機能<br>
 　　13_initial_data.md ------- 初期データ登録<br>
 　　14_complete_repository.md - 完成版のリポジトリ<br>
 　　15_production_deploy.md -- 本番環境へのデプロイ<br>
