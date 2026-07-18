@@ -1,26 +1,26 @@
 ## 11-1.ユーザー管理機能
-### ユーザー管理機能とは
-　管理者ユーザーがユーザー一覧、ユーザー管理番号、管理者ユーザー登録を扱うことができる機能<br>
-　一般ユーザーの利用停止 / 利用再開、ユーザー削除も扱う<br>
+### ユーザー管理機能
+　この章では、管理者ユーザーがユーザー一覧、ユーザー管理番号、管理者ユーザー登録を扱う機能<br>
+　一般ユーザーの利用停止、利用再開、ユーザー削除も扱う<br>
 
-### 目次
 - [ユーザー管理画面](#ユーザー管理画面)
-- [ユーザー一覧の取得](#ユーザー一覧の取得)
+- [ユーザー一覧と管理番号一覧の取得](#ユーザー一覧と管理番号一覧の取得)
 - [ユーザー一覧タブと絞り込み](#ユーザー一覧タブと絞り込み)
 - [一般ユーザー用管理番号の発行](#一般ユーザー用管理番号の発行)
 - [管理者ユーザー登録](#管理者ユーザー登録)
 - [ユーザー利用状態の切り替え](#ユーザー利用状態の切り替え)
 - [ユーザー削除](#ユーザー削除)
+- [ユーザー管理機能のまとめ](#ユーザー管理機能のまとめ)
 
 ### ユーザー管理画面
-　ユーザーと管理番号をタブで切り替えて表示する<br>
+ユーザー管理画面では、ユーザー一覧と管理番号一覧をタブで切り替えて表示する<br>
 
 - /admin/usersにアクセスした場合<br>
   React側<br>
 　`Appコンポーネント`<br>
 　　loadUsersを実行する<br>
 　　loadManagementCodesを実行する<br>
-　　UserManagementPageへusersとcodesを渡す<br>
+　　取得したusersとmanagementCodesをUserManagementPageへ渡す<br>
 　`UserManagementPageコンポーネント`<br>
 　　ユーザー一覧タブを表示する<br>
 　　一般ユーザー用管理番号一覧タブを表示する<br>
@@ -35,8 +35,8 @@
 　mobileorder-react/src/App.jsx<br>
 　mobileorder-react/src/pages/admin/UserManagementPage.jsx<br>
 
-### ユーザー一覧の取得
-　登録済みユーザーと管理番号を取得する<br>
+### ユーザー一覧と管理番号一覧の取得
+ユーザー一覧と管理番号一覧の取得では、画面表示に必要な2種類のデータを取得する<br>
 
 - GET /api/admin/usersを呼び出した場合<br>
   Java側<br>
@@ -46,7 +46,7 @@
 　`AdminUserService`<br>
 　　全ユーザーを新しい順で取得する<br>
 　　AdminUserResponseへ変換して返す<br>
-
+  <br>
 - GET /api/admin/user-management-codesを呼び出した場合<br>
   Java側<br>
 　`AdminUserService`<br>
@@ -55,7 +55,7 @@
 
 - ここで確認すること<br>
 　ユーザー情報と管理番号は別APIで取得する<br>
-　ユーザー一覧では管理者ユーザーを上に表示するようReact側で並び替えている<br><br>
+　管理番号はUSER-CODEとADMIN-CODEで表示先を分ける<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -65,26 +65,27 @@
 　dto/UserManagementCodeResponse.java<br>
 
 ### ユーザー一覧タブと絞り込み
-　表示するユーザー種別を切り替える<br>
+ユーザー一覧タブと絞り込みでは、表示するユーザー種別を切り替える<br>
 
 - ユーザー一覧タブを表示した場合<br>
   React側<br>
 　`UserManagementPageコンポーネント`<br>
+　　userFilterをstateで管理する<br>
 　　すべて、一般ユーザー、管理者ユーザーで絞り込む<br>
-　　管理者ユーザーはadmin-userの見た目で表示する<br>
-　　一般ユーザーはgeneral-userの見た目で表示する<br>
-　　ユーザー名、権限、ステータスを表示する<br><br>
+　　管理者ユーザーを上に表示する<br>
+　　ユーザー名、権限、ステータスを表示する<br>
+　　ログイン中の自分自身は削除ボタンを非活性にする<br><br>
 
 - ここで確認すること<br>
-　ユーザー種別の絞り込みはReact側で行っている<br>
-　ログイン中の自分自身は削除できないようにする<br><br>
+　ユーザー種別の絞り込みと並び替えはReact側で行っている<br>
+　利用停止、利用再開ボタンは一般ユーザーだけ押下できる<br><br>
 
 - 参照ファイル<br>
   React側<br>
 　mobileorder-react/src/pages/admin/UserManagementPage.jsx<br>
 
 ### 一般ユーザー用管理番号の発行
-　USER-CODEから始まる管理番号を作成する<br>
+一般ユーザー用管理番号の発行では、USER-CODEから始まる管理番号を作成する<br>
 
 - 発行ボタンを押した場合<br>
   React側<br>
@@ -113,7 +114,7 @@
 　service/AdminUserService.java<br>
 
 ### 管理者ユーザー登録
-　ADMIN-CODEから始まる管理番号を使って管理者ユーザーを作成する<br>
+管理者ユーザー登録では、ADMIN-CODEから始まる管理番号を使って管理者ユーザーを作成する<br>
 
 - 新しく管理者ユーザーを登録するボタンを押した場合<br>
   React側<br>
@@ -123,7 +124,7 @@
 　`AdminUserRegistrationPageコンポーネント`<br>
 　　管理者用のユーザー管理番号をreadOnlyで表示する<br>
 　　ユーザー名、パスワード、パスワード確認用を入力する<br>
-　　登録ボタンでonSubmitを実行する<br>
+　　登録前に確認モーダルを表示する<br>
   <br>
   Java側<br>
 　`AdminUserService`<br>
@@ -147,7 +148,7 @@
 　service/AdminUserService.java<br>
 
 ### ユーザー利用状態の切り替え
-　一般ユーザーの利用可 / 利用不可を変更する<br>
+ユーザー利用状態の切り替えでは、一般ユーザーの利用可、利用不可を変更する<br>
 
 - 利用停止または利用再開ボタンを押した場合<br>
   React側<br>
@@ -178,7 +179,7 @@
 　service/AppUserDetailsService.java<br>
 
 ### ユーザー削除
-　確認モーダルを表示してからユーザーを削除する<br>
+ユーザー削除では、確認モーダルを表示してからユーザーを削除する<br>
 
 - 削除ボタンを押した場合<br>
   React側<br>
@@ -205,3 +206,11 @@
   Java側<br>
 　controller/AdminUserController.java<br>
 　service/AdminUserService.java<br>
+
+### ユーザー管理機能のまとめ
+管理者ユーザーはユーザー一覧と管理番号一覧を確認できる<br>
+一般ユーザー用、管理者ユーザー用の管理番号を発行できる<br>
+管理者ユーザー登録ではADMIN-CODEから始まる未使用の管理番号を使う<br>
+一般ユーザーは利用停止、利用再開を切り替えできる<br>
+削除前には確認モーダルを表示する<br>
+ログイン中の自分自身は削除できない<br>
