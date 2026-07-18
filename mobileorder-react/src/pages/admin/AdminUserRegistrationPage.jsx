@@ -18,21 +18,29 @@ export default function AdminUserRegistrationPage({ managementCode, onSubmit, on
     setForm((current) => ({ ...current, [name]: value }))
   }
 
-  const submitAdminUser = async (event) => {
+  const submitAdminUser = (event) => {
     event.preventDefault()
     setError('')
 
-    try {
-      await onSubmit(form)
-    } catch (currentError) {
-      setError(currentError.message)
-    }
+    onConfirm({
+      title: '管理者ユーザー登録の確認',
+      message: `ユーザー名「${form.username}」で管理者ユーザーを登録しますが、よろしいでしょうか。`,
+      confirmText: '登録する',
+      confirmVariant: 'danger',
+      onConfirm: async () => {
+        try {
+          await onSubmit(form)
+        } catch (currentError) {
+          setError(currentError.message)
+        }
+      },
+    })
   }
 
   const cancelRegistration = () => {
     onConfirm({
-      title: 'ユーザー登録中断確認',
-      message: '編集中の内容はクリアされ、発行済みの管理者ユーザー用管理番号は破棄されます。よろしいですか？',
+      title: '管理者ユーザー登録中断確認',
+      message: '編集中の内容はクリアされ、発行済みの管理者ユーザー用管理番号は破棄されます、よろしいでしょうか。',
       confirmText: '戻る',
       onConfirm: onCancel,
     })
