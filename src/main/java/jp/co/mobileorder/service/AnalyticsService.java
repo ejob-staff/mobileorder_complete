@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import jp.co.mobileorder.dto.AnalyticsResponse;
 import jp.co.mobileorder.entity.MobileOrder;
 import jp.co.mobileorder.repository.MobileOrderRepository;
+import jp.co.mobileorder.repository.ProductRepository;
 import jp.co.mobileorder.repository.ProductReviewRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,12 @@ import org.springframework.stereotype.Service;
 public class AnalyticsService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd");
     private final MobileOrderRepository mobileOrderRepository;
+    private final ProductRepository productRepository;
     private final ProductReviewRepository productReviewRepository;
 
-    public AnalyticsService(MobileOrderRepository mobileOrderRepository, ProductReviewRepository productReviewRepository) {
+    public AnalyticsService(MobileOrderRepository mobileOrderRepository, ProductRepository productRepository, ProductReviewRepository productReviewRepository) {
         this.mobileOrderRepository = mobileOrderRepository;
+        this.productRepository = productRepository;
         this.productReviewRepository = productReviewRepository;
     }
 
@@ -50,9 +53,13 @@ public class AnalyticsService {
     }
 
     private List<AnalyticsResponse.CategoryScore> buildCategoryScores(List<MobileOrder> orders, double averageRating) {
+        {/*注文分析データ取得処理4 練習問題11-1-7-1*/}
+        {/*productテーブルのcategoryを参照するようにする*/}
+        var categoryByProductId = productRepository.findAll().stream()
+                .collect(Collectors.toMap(product -> product.getId(), product -> product.getCategory()));
         var itemCounts = orders.stream()
                 .flatMap(order -> order.getItems().stream())
-                .collect(Collectors.groupingBy(item -> guessCategory(item.getProductName()), Collectors.summingInt(item -> item.getQuantity())));
+                .collect(Collectors.groupingBy(item -> categoryByProductId.getOrDefault(item.getProductId(), "プレミアム"), Collectors.summingInt(item -> item.getQuantity())));
 
         return itemCounts.entrySet().stream()
                 .sorted(Comparator.comparing(entry -> entry.getKey()))
@@ -67,25 +74,27 @@ public class AnalyticsService {
                 .toList();
     }
 
-    private String guessCategory(String productName) {
-        if (productName.contains("プレミアム")) {
-            return "プレミアム";
-        }
-        if (productName.contains("タピオカ")) {
-            return "タピオカ";
-        }
-        if (productName.contains("桜") || productName.contains("桃")) {
-            return "季節限定";
-        }
-        if (productName.contains("ケーキ") || productName.contains("タルト")) {
-            return "ケーキ";
-        }
-        if (productName.contains("クッキー") || productName.contains("マドレーヌ")) {
-            return "焼き菓子";
-        }
-        if (productName.contains("ラテ") || productName.contains("ティー")) {
-            return "ドリンク";
-        }
-        return "プレミアム";
-    }
+    {/*注文分析データ取得処理4 練習問題11-1-7-1*/}
+    {/*不要な処理なのでコメントアウトにしておく*/}
+//    private String guessCategory(String productName) {
+//        if (productName.contains("プレミアム")) {
+//            return "プレミアム";
+//        }
+//        if (productName.contains("タピオカ")) {
+//            return "タピオカ";
+//        }
+//        if (productName.contains("桜") || productName.contains("桃")) {
+//            return "季節限定";
+//        }
+//        if (productName.contains("ケーキ") || productName.contains("タルト")) {
+//            return "ケーキ";
+//        }
+//        if (productName.contains("クッキー") || productName.contains("マドレーヌ")) {
+//            return "焼き菓子";
+//        }
+//        if (productName.contains("ラテ") || productName.contains("ティー")) {
+//            return "ドリンク";
+//        }
+//        return "プレミアム";
+//    }
 }
