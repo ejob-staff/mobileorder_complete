@@ -48,7 +48,9 @@ export default function AdminReviewsPage({ reviews, onLoadReviews }) {
                 </div>
                 <p className="review-comment">
                   <span>お客様からのレビュー</span>
-                  {review.comment || 'コメントはありません。'}
+                  {/*スター評価とレビューコメント 練習問題10-1-5-1*/}
+                  {/*レビューコメントが入力されていなかった場合の文言を変更する*/}
+                  {review.comment || 'レビューコメントは入力されていません。'}
                 </p>
               </div>
               {/*注文評価の確認 練習問題6-1-19-1*/}
