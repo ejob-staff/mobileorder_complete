@@ -82,4 +82,9 @@ public class Product {
     public void decreaseStock(int quantity) {
         this.stock -= quantity;
     }
+
+    {/*追加実装3: 注文キャンセル時に在庫を戻すためのメソッド*/}
+    public void increaseStock(int quantity) {
+        this.stock += quantity;
+    }
 }

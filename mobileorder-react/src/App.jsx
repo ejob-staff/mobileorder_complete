@@ -167,7 +167,12 @@ function App() {
     closeConfirm()
 
     if (currentModal?.onConfirm) {
-      await currentModal.onConfirm()
+      {/*追加実装9: 確認モーダル実行時のエラーが握りつぶされて画面が何も言わず閉じるのを防ぐ*/}
+      try {
+        await currentModal.onConfirm()
+      } catch (error) {
+        setMessage(error.message)
+      }
     }
   }
 
@@ -196,13 +201,9 @@ function App() {
     })
 
     if (!response.ok) {
-      const loginCheck = await apiRequest('/api/auth/login-check', {
-        method: 'POST',
-        headers: jsonHeaders,
-        body: JSON.stringify(form),
-      })
-
-      if (loginCheck.matched && !loginCheck.enabled) {
+      {/*修正8: 未認証のPOST /api/auth/login-check呼び出しをやめ、ログイン失敗レスポンス自体のreasonでアカウント無効を判定するよう書き換えた*/}
+      const result = await response.json().catch(() => ({}))
+      if (result.reason === 'disabled') {
         throw new Error('入力されたユーザーは現在利用停止されています。')
       }
 
@@ -213,7 +214,8 @@ function App() {
   }
 
   const doLogout = async () => {
-    await fetch('/api/logout', { method: 'POST', credentials: 'include' })
+    {/*修正9: 生のfetch呼び出しを共通のapiRequestに変更した*/}
+    await apiRequest('/api/logout', { method: 'POST' })
     setAuth(null)
     setCart([])
     navigate('/login')

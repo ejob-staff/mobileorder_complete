@@ -36,7 +36,8 @@ public class OrderService {
         var total = 0;
 
         for (var item : request.items()) {
-            var product = productRepository.findById(item.productId())
+            {/*修正1: findByIdをfindByIdForUpdateに変更し、同時注文による在庫のマイナス落ちを防ぐ排他ロックを掛けるようにした*/}
+            var product = productRepository.findByIdForUpdate(item.productId())
                     .orElseThrow(() -> new IllegalArgumentException("商品が見つかりません。"));
             if (!product.isPublished()) {
                 throw new IllegalArgumentException("非公開の商品は注文できません。");
@@ -74,14 +75,33 @@ public class OrderService {
     @Transactional
     public OrderResponse updateStatus(String orderNumber, OrderStatusUpdateRequest request, String adminUsername) {
         var order = findByOrderNumber(orderNumber);
+
+        {/*追加実装2: 提供済み・受取完了・キャンセル済みの注文はステータス変更を不可にする*/}
+        if (order.getStatus() == OrderStatus.SERVED || order.getStatus() == OrderStatus.RECEIVED || order.getStatus() == OrderStatus.CANCELED) {
+            throw new IllegalArgumentException("この注文のステータスはこれ以上変更できません。");
+        }
+
         var status = OrderStatus.valueOf(request.status());
 
         if (status == OrderStatus.CANCELED && (request.cancelReason() == null || request.cancelReason().isBlank())) {
             throw new IllegalArgumentException("キャンセルの理由を入力してください。");
         }
 
+        {/*追加実装3: 注文キャンセル時に在庫を戻す*/}
+        if (status == OrderStatus.CANCELED) {
+            restoreStock(order);
+        }
+
         order.updateStatus(status, request.cancelReason(), adminUsername);
         return OrderResponse.from(order);
+    }
+
+    {/*追加実装3: 注文キャンセル時に在庫を戻すための処理*/}
+    private void restoreStock(MobileOrder order) {
+        for (var item : order.getItems()) {
+            productRepository.findByIdForUpdate(item.getProductId())
+                    .ifPresent(product -> product.increaseStock(item.getQuantity()));
+        }
     }
 
     @Transactional

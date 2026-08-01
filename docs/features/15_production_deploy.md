@@ -60,7 +60,8 @@
 
 - ここで確認すること<br>
 　本番環境ではDB接続先、ポート、認証情報が正しいか確認する<br>
-　ddl-auto=updateの扱いは運用方針に合わせて確認する<br><br>
+　ddl-auto=updateの扱いは運用方針に合わせて確認する<br>
+　ユーザー名のDBユニーク制約（修正4）はddl-auto=updateで反映される前提のため、初回起動時に実際に制約が付与されているか確認する<br><br>
 
 - 参照ファイル<br>
 　src/main/resources/application.yml<br>

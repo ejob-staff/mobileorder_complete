@@ -81,6 +81,7 @@
   React側<br>
 　`Appコンポーネント`<br>
 　　POST /api/auth/login-checkで利用停止中ユーザーか確認する<br>
+　　→ login-checkは未認証で叩けるパスワード確認オラクルになっていたため廃止し、ログイン失敗レスポンス自体のreasonで判定するようにした（修正8）<br>
 　　利用停止中の場合は専用メッセージを表示する<br>
 　　それ以外の場合はユーザー名またはパスワード違いとして扱う<br><br>
 
@@ -104,6 +105,7 @@
 　　/api/loginをログイン処理用URLに設定する<br>
 　　ログイン成功時は200とJSONを返す<br>
 　　ログイン失敗時は401を返す<br>
+　　ログイン失敗時のレスポンスにDisabledExceptionかどうかを判定したreason(disabled/invalid)を含めるようにした（修正6）<br>
 　　/api/logoutをログアウト処理用URLに設定する<br>
 　　BCryptPasswordEncoderをPasswordEncoderとして使用する<br>
 　　AppUserDetailsServiceを認証ユーザー取得処理として使用する<br><br>
@@ -173,8 +175,9 @@
 
 ### 利用停止中ユーザーの確認
 　ログイン失敗時のメッセージを表示する<br>
+　※本節の内容は元の実装であり、login-checkは未認証で叩けるパスワード確認オラクル（誰でもユーザー名とパスワードの正誤を確認できてしまう状態）になっていたため廃止した（修正6・修正7・修正8）。現在はSecurityConfigのfailureHandlerがDisabledExceptionを判定し、ログイン失敗レスポンスのreasonで利用停止中かどうかを返す方式になっている<br>
 
-- POST /api/loginが失敗した場合<br>
+- POST /api/loginが失敗した場合（旧実装）<br>
   React側<br>
 　`Appコンポーネント`<br>
 　　POST /api/auth/login-checkでユーザー名とパスワードを送信する<br>
@@ -191,7 +194,8 @@
 
 - ここで確認すること<br>
 　SpringSecurityのログイン失敗だけでは利用停止中かどうかを画面側で判別しづらい<br>
-　login-checkは専用メッセージ表示のために使用している<br><br>
+　login-checkは専用メッセージ表示のために使用している<br>
+　→ login-checkエンドポイントは削除済み。AuthControllerはGET /api/auth/statusのみを持つ（修正7）<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -199,7 +203,7 @@
   <br>
   Java側<br>
 　controller/AuthController.java<br>
-　dto/LoginCheckRequest.java<br>
+　dto/LoginCheckRequest.java（修正7により削除）<br>
 
 ### 新規アカウント作成画面
  一般ユーザーがユーザー管理番号を使ってアカウントを作成できる画面<br>
@@ -239,13 +243,16 @@
 　　入力されたユーザー管理番号が存在するか確認する<br>
 　　USER-CODEから始まる一般ユーザー用の管理番号か確認する<br>
 　　ユーザー管理番号が未使用か確認する<br>
+　　この確認は同時サインアップで管理番号が二重使用されないよう排他ロック付きで行うようにした（修正2）<br>
 　　パスワードをBCryptで暗号化する<br>
 　　ROLE_USERのAppUserを保存する<br>
+　　保存時にユーザー名重複が起きた場合はDBのユニーク制約違反として検知するようにした（修正4・追加実装5）<br>
 　　ユーザー管理番号を使用済みにする<br><br>
 
 - ここで確認すること<br>
 　新規アカウント作成で使えるのはUSER-CODEから始まる未使用の管理番号だけ<br>
-　ユーザー名は重複登録できない<br><br>
+　ユーザー名は重複登録できない<br>
+　同時に同じユーザー名やユーザー管理番号で登録された場合もDB側の制約と排他ロックで防いでいる（修正2・修正4・追加実装5）<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -337,6 +344,7 @@
 　　logoutを実行する<br>
 　　ConfirmModalを表示する<br>
 　　確定時にPOST /api/logoutを送信する<br>
+　　この送信は元々生のfetchを使っていたが、共通のapiRequestを使うよう変更した（修正9）<br>
 　　authをnullにする<br>
 　　cartを空にする<br>
 　　/loginへ遷移する<br><br>

@@ -98,7 +98,7 @@
 　　AdminUserResponse.java ------------ ユーザー情報レスポンス<br>
 　　AnalyticsResponse.java ------------ 注文分析レスポンス<br>
 　　AuthStatusResponse.java ----------- ログイン状態レスポンス<br>
-　　LoginCheckRequest.java ------------ ログイン確認リクエスト<br>
+　　LoginCheckRequest.java ------------ ログイン確認リクエスト（修正7により削除）<br>
 　　OrderRequest.java ----------------- 注文登録リクエスト<br>
 　　OrderResponse.java ---------------- 注文情報レスポンス<br>
 　　OrderStatusUpdateRequest.java ----- 注文ステータス更新リクエスト<br>
@@ -374,7 +374,8 @@
 　`ConfirmModalコンポーネント`<br>
 　　確定処理を呼び出す<br>
 　`Appコンポーネント`<br>
-　　登録、削除、キャンセルなどの本処理を実行する<br><br>
+　　登録、削除、キャンセルなどの本処理を実行する<br>
+　　本処理でエラーが発生した場合はmessageに表示するようになっている（追加実装9）<br><br>
 
 - ここで確認すること<br>
 　確認モーダルは全画面共通で使っている<br>
@@ -401,7 +402,9 @@
 
 - ここで確認すること<br>
 　API通信の共通処理はclient.jsにまとめている<br>
-　各画面で同じfetch処理を何度も書かないようにしている<br><br>
+　各画面で同じfetch処理を何度も書かないようにしている<br>
+　ログアウト処理は元々生のfetchを使っていたが、apiRequestを使うよう統一した（修正9）<br>
+　ログイン処理はレスポンスの形が他と異なるため、引き続き生のfetchを使っている<br><br>
 
 - 参照ファイル<br>
   React側<br>
@@ -459,7 +462,9 @@
 　`SecurityConfig`<br>
 　　requestMatchersでURLごとの権限を確認する<br>
 　　/api/admin/**は管理者ユーザーだけ利用できる<br>
-　　/api/orders/**や/api/reviews/**は一般ユーザーだけ利用できる<br><br>
+　　/api/orders/**や/api/reviews/**は一般ユーザーだけ利用できる<br>
+　　ルールに一致しないURLは元々anyRequest().permitAll()で誰でもアクセスできたが、anyRequest().authenticated()に変更し、ログインが必要になった（修正5）<br>
+　　signup、password-resetは上記の変更に合わせて明示的にpermitAllを設定するようにした（追加実装8）<br><br>
 
 - ここで確認すること<br>
 　Spring Securityはログイン処理とAPIアクセス制御を担当している<br>

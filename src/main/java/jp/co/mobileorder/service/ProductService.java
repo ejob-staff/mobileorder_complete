@@ -53,6 +53,10 @@ public class ProductService {
 
     @Transactional
     public void delete(Long id) {
+        {/*追加実装4: 存在しないIDのdeleteByIdで例外が発生し500になるのを防ぐ*/}
+        if (!productRepository.existsById(id)) {
+            throw new IllegalArgumentException("商品が見つかりません。");
+        }
         productRepository.deleteById(id);
     }
 

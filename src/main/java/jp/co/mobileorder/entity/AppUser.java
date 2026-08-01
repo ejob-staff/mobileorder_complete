@@ -15,6 +15,8 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    {/*修正4: usernameフィールドに@Column(unique = true)を追加し、同時登録によるユーザー名重複をDB側でも防ぐようにした*/}
+    @Column(unique = true)
     private String username;
     private String password;
     private String displayName;

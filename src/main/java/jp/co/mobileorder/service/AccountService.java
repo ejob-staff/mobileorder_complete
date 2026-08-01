@@ -7,6 +7,7 @@ import jp.co.mobileorder.entity.AppUser;
 import jp.co.mobileorder.entity.Role;
 import jp.co.mobileorder.repository.AppUserRepository;
 import jp.co.mobileorder.repository.UserManagementCodeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,8 @@ public class AccountService {
             throw new IllegalArgumentException("入力したユーザー名は既に使用されています。");
         }
 
-        var managementCode = userManagementCodeRepository.findByCode(request.code())
+        {/*修正2: findByCodeをfindByCodeForUpdateに変更し、管理番号の同時使用を防ぐ排他ロックを掛けるようにした*/}
+        var managementCode = userManagementCodeRepository.findByCodeForUpdate(request.code())
                 .orElseThrow(() -> new IllegalArgumentException("入力したユーザー管理番号は存在しません。"));
 
         if (!managementCode.getCode().startsWith(USER_CODE_PREFIX)) {
@@ -51,7 +53,13 @@ public class AccountService {
                 request.username(),
                 Role.ROLE_USER
         );
-        var saved = appUserRepository.save(user);
+        {/*追加実装5: existsByUsernameのチェックをすり抜けた同時サインアップのユーザー名重複をDBユニーク制約違反として検知*/}
+        AppUser saved;
+        try {
+            saved = appUserRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throw new IllegalArgumentException("入力したユーザー名は既に使用されています。");
+        }
         managementCode.markUsed(saved.getUsername());
         return AdminUserResponse.from(saved);
     }
