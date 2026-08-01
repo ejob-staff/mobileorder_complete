@@ -150,7 +150,7 @@ export default function AnalyticsPage({ analytics }) {
   return (
     <main className="container admin-layout">
       <section className="page-head">
-        <p className="eyebrow">Admin</p>
+        <p className="eyebrow">Analytics</p>
         <h1>注文分析</h1>
         <p>売上、注文数、評価、カテゴリ別の傾向を確認できます。</p>
       </section>

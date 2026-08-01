@@ -76,7 +76,7 @@ export default function ProductFormPage({ mode, product, onSubmit, onNavigate, o
   return (
     <main className="container narrow admin-layout">
       <section className="page-head">
-        <p className="eyebrow">Admin</p>
+        <p className="eyebrow">Product</p>
         <h1>{isEdit ? '商品編集' : '商品登録'}</h1>
         <p>{isEdit ? '登録されている商品の内容を編集できます。' : '新しく商品を登録できます。'}</p>
       </section>

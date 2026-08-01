@@ -34,7 +34,7 @@ export default function AdminProductsPage({ products, onDelete, onTogglePublishe
     <main className="container admin-layout">
       <section className="page-head admin-page-head">
         <div>
-          <p className="eyebrow">Admin</p>
+          <p className="eyebrow">Products</p>
           <h1>商品管理</h1>
           <p>商品の編集、削除、公開状態、在庫数を管理できます。</p>
           <p>新商品の登録もできます。</p>

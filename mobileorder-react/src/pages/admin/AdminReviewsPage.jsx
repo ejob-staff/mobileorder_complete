@@ -17,7 +17,7 @@ export default function AdminReviewsPage({ reviews, onLoadReviews }) {
   return (
     <main className="container admin-layout">
       <section className="page-head">
-        <p className="eyebrow">Admin</p>
+        <p className="eyebrow">Reviews</p>
         <h1>注文評価</h1>
         <p>お客様が評価した商品の一覧を確認できます。</p>
       </section>

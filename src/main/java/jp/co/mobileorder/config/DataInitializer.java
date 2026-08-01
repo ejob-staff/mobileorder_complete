@@ -167,14 +167,6 @@ public class DataInitializer {
                         mobileOrderRepository.save(order);
                     }
 
-                    for (int i = 0; i < 4; i++) {
-                        var createdAt = now.minusMinutes(6 + (i * 4));
-                        var order = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), sampleUsers.get(i % 4), createdAt, now.plusMinutes(12 + (i * 8)), seasonal.getPrice() + drink.getPrice());
-                        order.addItem(new OrderItem(seasonal.getId(), seasonal.getName(), seasonal.getPrice(), 1));
-                        order.addItem(new OrderItem(drink.getId(), drink.getName(), drink.getPrice(), 1));
-                        mobileOrderRepository.save(order);
-                    }
-
                     for (int i = 0; i < 2; i++) {
                         var createdAt = now.minusMinutes(18 + (i * 7));
                         var order = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), sampleUsers.get((i + 2) % 4), createdAt, now.plusMinutes(18 + (i * 10)), cake.getPrice());
@@ -197,6 +189,16 @@ public class DataInitializer {
                     canceledOrder.addItem(new OrderItem(seasonal.getId(), seasonal.getName(), seasonal.getPrice(), 1));
                     canceledOrder.updateStatus(OrderStatus.CANCELED, "材料の在庫が不足したため、店舗側でキャンセルしました。", "admin");
                     mobileOrderRepository.save(canceledOrder);
+
+                    // 一覧は登録順(ID降順)で並ぶため、最後に未対応(PENDING)の注文を登録して
+                    // キャンセル済みではなく直近の未対応注文が一覧の先頭に来るようにする
+                    for (int i = 0; i < 4; i++) {
+                        var createdAt = now.minusMinutes(6 + (i * 4));
+                        var order = new MobileOrder(generateSampleOrderNumber(sampleOrderNumbers), sampleUsers.get(i % 4), createdAt, now.plusMinutes(12 + (i * 8)), seasonal.getPrice() + drink.getPrice());
+                        order.addItem(new OrderItem(seasonal.getId(), seasonal.getName(), seasonal.getPrice(), 1));
+                        order.addItem(new OrderItem(drink.getId(), drink.getName(), drink.getPrice(), 1));
+                        mobileOrderRepository.save(order);
+                    }
                 }
             }
 

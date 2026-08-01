@@ -49,7 +49,7 @@ export default function AdminUserRegistrationPage({ managementCode, onSubmit, on
   return (
     <main className="container narrow admin-layout">
       <section className="page-head">
-        <p className="eyebrow">Admin</p>
+        <p className="eyebrow">New User</p>
         <h1>新規管理者ユーザー登録</h1>
         <p>管理者用のユーザー管理番号を使用して、管理者ユーザーを登録できます。</p>
       </section>

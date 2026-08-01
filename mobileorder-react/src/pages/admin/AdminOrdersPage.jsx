@@ -117,7 +117,7 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
   return (
     <main className="container admin-layout">
       <section className="page-head">
-        <p className="eyebrow">Admin</p>
+        <p className="eyebrow">Order Status</p>
         <h1>注文状況</h1>
         <p>お客様の注文状況を確認し、準備状況を更新できます。</p>
       </section>

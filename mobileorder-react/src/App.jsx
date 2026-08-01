@@ -224,7 +224,7 @@ function App() {
   const logout = async () => {
     showConfirm({
       title: 'ログアウト確認',
-      message: 'ログイン状態ではなくなりますが、よろしいでしょうか？',
+      message: 'ログイン状態ではなくなりますが、よろしいでしょうか。',
       confirmText: 'ログアウトする',
       onConfirm: doLogout,
     })

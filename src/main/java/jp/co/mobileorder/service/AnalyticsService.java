@@ -7,9 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import jp.co.mobileorder.dto.AnalyticsResponse;
 import jp.co.mobileorder.entity.MobileOrder;
+import jp.co.mobileorder.entity.ProductReview;
 import jp.co.mobileorder.repository.MobileOrderRepository;
 import jp.co.mobileorder.repository.ProductRepository;
 import jp.co.mobileorder.repository.ProductReviewRepository;
@@ -34,7 +36,7 @@ public class AnalyticsService {
         var totalSales = orders.stream().mapToInt(MobileOrder::getTotal).sum();
         var averageRating = reviews.isEmpty() ? 0.0 : reviews.stream().mapToInt(review -> review.getRating()).average().orElse(0.0);
         var dailySales = buildDailySales(orders);
-        var categoryScores = buildCategoryScores(orders, averageRating);
+        var categoryScores = buildCategoryScores(orders, reviews, averageRating);
 
         return new AnalyticsResponse(totalSales, orders.size(), Math.round(averageRating * 10) / 10.0, dailySales, categoryScores);
     }
@@ -54,7 +56,7 @@ public class AnalyticsService {
         return result;
     }
 
-    private List<AnalyticsResponse.CategoryScore> buildCategoryScores(List<MobileOrder> orders, double averageRating) {
+    private List<AnalyticsResponse.CategoryScore> buildCategoryScores(List<MobileOrder> orders, List<ProductReview> reviews, double averageRating) {
         {/*注文分析データ取得処理4 練習問題11-1-7-1*/}
         {/*productテーブルのcategoryを参照するようにする*/}
         var categoryByProductId = productRepository.findAll().stream()
@@ -69,31 +71,44 @@ public class AnalyticsService {
                 .collect(Collectors.groupingBy(item -> categoryByProductId.getOrDefault(item.getProductId(), "プレミアム"), Collectors.summingInt(item -> item.getPrice() * item.getQuantity())));
         var totalMinutesByCategory = new HashMap<String, Long>();
         var orderCountByCategory = new HashMap<String, Integer>();
+        var categoryOrdersByUser = new HashMap<String, Map<String, Long>>();
         orders.forEach(order -> {
             var minutes = Duration.between(order.getCreatedAt(), order.getPickupAt()).toMinutes();
+            var categoriesInOrder = order.getItems().stream()
+                    .map(item -> categoryByProductId.getOrDefault(item.getProductId(), "プレミアム"))
+                    .collect(Collectors.toSet());
+            categoriesInOrder.forEach(category ->
+                    categoryOrdersByUser.computeIfAbsent(category, key -> new HashMap<>())
+                            .merge(order.getUsername(), 1L, Long::sum));
             order.getItems().forEach(item -> {
                 var category = categoryByProductId.getOrDefault(item.getProductId(), "プレミアム");
                 totalMinutesByCategory.merge(category, minutes, Long::sum);
                 orderCountByCategory.merge(category, 1, Integer::sum);
             });
         });
+        var ratingsByCategory = reviews.stream()
+                .collect(Collectors.groupingBy(review -> categoryByProductId.getOrDefault(review.getProductId(), "プレミアム"), Collectors.averagingInt(ProductReview::getRating)));
         var maxCategoryQuantity = itemCounts.values().stream().mapToInt(Integer::intValue).max().orElse(0);
         var maxCategorySales = categorySales.values().stream().mapToInt(Integer::intValue).max().orElse(0);
-        var ratingScore = (int) Math.round(averageRating * 20);
 
         return itemCounts.entrySet().stream()
                 .sorted(Comparator.comparing(entry -> entry.getKey()))
                 .map(entry -> {
+                    var category = entry.getKey();
                     var categoryQuantity = entry.getValue();
-                    var categorySalesAmount = categorySales.getOrDefault(entry.getKey(), 0);
+                    var categorySalesAmount = categorySales.getOrDefault(category, 0);
                     var salesPower = maxCategorySales == 0 ? 0 : (int) Math.round(40 + categorySalesAmount * 60.0 / maxCategorySales);
                     var volume = maxCategoryQuantity == 0 ? 0 : (int) Math.round(40 + categoryQuantity * 60.0 / maxCategoryQuantity);
-                    var category = entry.getKey();
                     var orderCount = orderCountByCategory.getOrDefault(category, 0);
                     var averageMinutes = orderCount == 0 ? 0 : totalMinutesByCategory.getOrDefault(category, 0L) / orderCount;
                     var onTimeRate = (int) Math.clamp(100 - Math.max(0, averageMinutes - 30) * 2, 0, 100);
-                    var repeatPotential = (int) Math.round((volume + ratingScore) / 2.0);
-                    return new AnalyticsResponse.CategoryScore(entry.getKey(), salesPower, volume, onTimeRate, ratingScore, repeatPotential);
+                    var categoryAverageRating = ratingsByCategory.getOrDefault(category, averageRating);
+                    var ratingScore = (int) Math.round(categoryAverageRating * 20);
+                    var usersInCategory = categoryOrdersByUser.getOrDefault(category, Map.of());
+                    var repeatUserCount = usersInCategory.values().stream().filter(count -> count >= 2).count();
+                    var repeatRate = usersInCategory.isEmpty() ? 0 : (int) Math.round(repeatUserCount * 100.0 / usersInCategory.size());
+                    var repeatPotential = (int) Math.round(repeatRate * 0.6 + ratingScore * 0.4);
+                    return new AnalyticsResponse.CategoryScore(category, salesPower, volume, onTimeRate, ratingScore, repeatPotential);
                 })
                 .toList();
     }

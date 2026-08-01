@@ -129,7 +129,7 @@ export default function UserManagementPage({ users, codes, currentUsername, init
   return (
     <main className="container admin-layout">
       <section className="page-head">
-        <p className="eyebrow">Admin</p>
+        <p className="eyebrow">Users</p>
         <h1>ユーザー管理</h1>
         <p>ユーザー管理番号の発行、ユーザーの利用状態、削除を管理できます。</p>
       </section>
