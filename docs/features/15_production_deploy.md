@@ -1,106 +1,130 @@
-## 15-1.本番環境へのデプロイ
-### 本番環境へのデプロイとは
-　開発したソフトウェアをユーザーが使える環境に反映する<br>
+# 15章 本番環境へのデプロイ
 
 ### 目次
-- [環境変数の設定](#環境変数の設定)
-- [DBの準備](#DBの準備)
-- [Spring Bootの起動設定](#Spring-Bootの起動設定)
-- [Reactのビルド](#Reactのビルド)
-- [デプロイ前の確認項目](#デプロイ前の確認項目)
+- [構成の概要](#構成の概要)
+- [設定ファイルの作成](#設定ファイルの作成)
+- [DBを起動する](#DBを起動する)
+- [Spring Bootを起動する](#SpringBootを起動する)
+- [Reactを起動する](#Reactを起動する)
+- [ローカルでの動作確認](#ローカルでの動作確認)
+- [Renderでのデプロイ](#Renderでのデプロイ)
+- [Vercelでのデプロイ](#Vercelでのデプロイ)
+- [本番環境で動作確認](#本番環境で動作確認)
 
-### 環境変数の設定
-　環境変数の設定では、.env.exampleを参考に.envを作成する<br>
+フロントエンドであるReact/ViteをVercel、バックエンドであるSpring BootをRenderにデプロイし、<br>
+DBはPostgreSQLを使って外部公開するまでの手順。
 
-- 設定する値<br>
-　DB_PORT -- MySQLの接続ポート<br>
-　DB_NAME -- DB名<br>
-　DB_USERNAME -- DBユーザー名<br>
-　DB_PASSWORD -- DBパスワード<br>
-　DB_ROOT_PASSWORD -- rootユーザーのパスワード<br>
-　DB_CONTAINER_NAME -- DBコンテナ名<br>
-　APP_PORT -- Spring Bootの起動ポート<br><br>
+## 構成の概要
 
-- ここで確認すること<br>
-　本番環境では推測されにくいパスワードを設定する<br>
-　.envはGit管理に含めない<br><br>
+- フロント: `mobileorder-react/` → **Vercel**
+- バックエンド: リポジトリ直下（`pom.xml`）→ **Render**（マネージドPostgres込み）
+- DB: **PostgreSQL**（旧MySQLから移行済み）
+- 認証: 既存のセッションCookie方式（Spring Security formLogin, JSESSIONID）のまま変更なし
+- クロスオリジン対策: Vercelの`rewrites`で`/api/*`をRenderのバックエンドにプロキシする。ブラウザからは常にVercelドメインへの同一オリジン通信に見えるため、CORS設定やSameSite=None Cookie対応は不要。フロントの`fetch('/api/...', { credentials: 'include' })`という既存コードも無改修で動く。
 
-- 参照ファイル<br>
-　.env.example<br>
-　src/main/resources/application.yml<br>
+## 設定ファイルの作成
 
-### DBの準備
-　DBの準備では、MySQLコンテナまたは本番環境のMySQLを用意する<br>
+`.env.example`を参考に`.env`を作成する
 
-- Docker Composeを使う場合<br>
-　docker-compose.ymlを使用する<br>
-　mysql:8.4イメージを使用する<br>
-　database-volumeにDBデータを保存する<br>
-　TZはAsia/Tokyoに設定する<br>
-　DB_PORTでホスト側ポートを指定する<br><br>
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=mobileorder
+DB_USERNAME=mobileorderuser
+DB_CONTAINER_NAME=mobileorder-postgres
+DB_PASSWORD=任意のパスワード
 
-- ここで確認すること<br>
-　DB_NAME、DB_USERNAME、DB_PASSWORDがapplication.ymlと一致している必要がある<br>
-　初回起動時はDataInitializerが初期データを登録する<br><br>
+APP_PORT=8083
+```
 
-- 参照ファイル<br>
-　docker-compose.yml<br>
-　.env.example<br>
+## DBを起動する
 
-### Spring Bootの起動設定
-　Spring Bootの起動設定では、application.ymlが環境変数を読み込む<br>
+```
+docker compose up -d
+```
 
-- 起動時に使用する設定<br>
-　spring.config.importで.envを読み込む<br>
-　datasource.urlにDB_PORTとDB_NAMEを使用する<br>
-　datasource.usernameにDB_USERNAMEを使用する<br>
-　datasource.passwordにDB_PASSWORDを使用する<br>
-　server.portにAPP_PORTを使用する<br>
-　spring.jpa.hibernate.ddl-autoはupdateを使用する<br><br>
+`docker-compose.yml`は`postgres:16`イメージを使う。
 
-- ここで確認すること<br>
-　本番環境ではDB接続先、ポート、認証情報が正しいか確認する<br>
-　ddl-auto=updateの扱いは運用方針に合わせて確認する<br>
-　ユーザー名のDBユニーク制約（修正4）はddl-auto=updateで反映される前提のため、初回起動時に実際に制約が付与されているか確認する<br><br>
+## SpringBootを起動する
 
-- 参照ファイル<br>
-　src/main/resources/application.yml<br>
-　pom.xml<br>
+起動後に指定しているローカルのアプリケーションポートでAPIが動く。
+`DataInitializer`が空のDBに初期ユーザー・商品・注文のサンプルデータを自動投入する。
 
-### Reactのビルド
-　Reactのビルドでは、Viteでフロントエンドをビルドする<br>
+## Reactを起動する
 
-- ビルドする場合<br>
-　mobileorder-react/package.jsonを確認する<br>
-　npm installで依存関係を準備する<br>
-　npm run buildで本番用ファイルを作成する<br>
-　npm run previewでビルド結果を確認できる<br><br>
+```
+cd mobileorder-react
+npm install
+npm run dev
+```
 
-- ここで確認すること<br>
-　React側のAPI呼び出し先が本番環境で正しく解決できるか確認する<br>
-　ログイン状態はCookieを使うため、同一オリジンやプロキシ設定も確認する<br><br>
+表示されているURLを開いて画面が表示されればOK。
 
-- 参照ファイル<br>
-　mobileorder-react/package.json<br>
-　mobileorder-react/vite.config.js<br>
+## ローカルでの動作確認
 
-### デプロイ前の確認項目
-　デプロイ前の確認項目では、主要機能が本番環境で動くか確認する<br>
+- [ ] ログインできる
+- [ ] 新規アカウント作成できる
+- [ ] パスワード再設定できる
+- [ ] 商品を注文できる
+- [ ] 注文履歴を確認できる
+- [ ] 評価を登録できる
+- [ ] （管理者）商品管理できる
+- [ ] （管理者）注文ステータスを更新できる
+- [ ] （管理者）注文分析を確認できる
+- [ ] （管理者）ユーザー管理できる
 
-- 確認する機能<br>
-　ログインできる<br>
-　新規アカウント作成できる<br>
-　パスワード再設定できる<br>
-　一般ユーザーが商品を注文できる<br>
-　注文状況と注文履歴を確認できる<br>
-　受取完了後に評価を登録できる<br>
-　管理者ユーザーが商品管理できる<br>
-　管理者ユーザーが注文ステータスを更新できる<br>
-　管理者ユーザーがユーザー管理できる<br>
-　注文分析を確認できる<br>
+## Renderでのデプロイ
 
-- 確認する設定<br>
-　DB接続情報が正しい<br>
-　APP_PORTが使用可能である<br>
-　初期データが必要な状態で登録されている<br>
-　.envがGit管理されていない<br>
+1. Renderの公式サイトにサインアップし、このGitHubリポジトリと連携する
+2. **PostgreSQL** インスタンスを新規作成する。作成後に発行される接続情報（ホスト・ポート・DB名・ユーザー名・パスワード）を控える
+3. **Web Service** を新規作成し、リポジトリのルート（`pom.xml`がある場所）を指定する
+    - ランタイム: **Native Java**（Dockerではない）
+    - Build command: `./mvnw clean package -DskipTests`
+    - Start command: `java -jar target/mobileorder_complete-0.0.1-SNAPSHOT.jar`
+4. 環境変数を設定する（手順2で控えたPostgresの接続情報から）
+    - `DB_HOST` `DB_PORT` `DB_NAME` `DB_USERNAME` `DB_PASSWORD`
+    - `PORT`はRenderが自動で注入するので設定不要
+5. デプロイが完了したら発行される`https://<service名>.onrender.com`のURLを控える
+
+`system.properties`（`java.runtime.version=21`）でJavaのバージョンをRenderに明示している。（deployブランチで参照可能）
+
+## Vercelでのデプロイ
+
+1. Vercelの公式サイトにサインアップし、同じGitHubリポジトリと連携してプロジェクトを作成する
+2. **Root Directory** を`mobileorder-react`に設定する
+3. Build/Output設定はデフォルト（`vite build` / `dist`）のままでよい
+4. `mobileorder-react/vercel.json`の`destination`を、手順6で控えたRenderのURLに書き換える（deployブランチで参照可能）
+
+```json
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://<service名>.onrender.com/api/:path*" }
+  ]
+}
+```
+
+5. コミット・プッシュしてVercelに再デプロイさせる
+6. デプロイ完了後、発行されたURLにアクセスする
+
+## 本番環境で動作確認
+
+手順5と同じチェックリストを、本番URL（Vercelのドメイン）上で確認する。
+
+- [ ] ログインできる
+- [ ] 新規アカウント作成できる
+- [ ] パスワード再設定できる
+- [ ] 商品を注文できる
+- [ ] 注文履歴を確認できる
+- [ ] 評価を登録できる
+- [ ] （管理者）商品管理できる
+- [ ] （管理者）注文ステータスを更新できる
+- [ ] （管理者）ユーザー管理できる
+- [ ] （管理者）注文分析を確認できる
+- [ ] ログイン後にページをリロードしてもログイン状態が保たれる（Cookieが正しくVercelドメインに乗っている確認）
+
+## 補足: なぜCORS設定が要らないのか
+
+RenderのバックエンドはVercelとは別ドメイン（`*.onrender.com`）で動いているが、<br>
+ブラウザは常にVercelドメイン（`*.vercel.app`）にしかアクセスしない。`/api/*`へのリクエストは<br>
+Vercel側のrewrite設定によってサーバー間でRenderに転送される仕組みのため、ブラウザから見ると同一オリジン通信になる。<br>
+そのためCORSヘッダーの設定も、Cookieの`SameSite=None`対応も不要になっている。

@@ -61,7 +61,8 @@
 
 - ここで確認すること<br>
 　注文データはMobileOrderRepositoryから取得する<br>
-　評価データはProductReviewRepositoryから取得する<br><br>
+　評価データはProductReviewRepositoryから取得する<br>
+　商品カテゴリはProductRepositoryから取得する<br><br>
 
 - 参照ファイル<br>
   Java側<br>
@@ -120,7 +121,8 @@
 - カテゴリ別スコアを作成する場合<br>
   Java側<br>
 　`AnalyticsService`<br>
-　　注文商品名からカテゴリを推定する<br>
+　　ProductRepositoryから商品IDとカテゴリの対応を取得する<br>
+　　注文商品のproductIdをもとにカテゴリを取得する<br>
 　　カテゴリごとの注文数を集計する<br>
 　　売上力、注文数、提供時間、お客様評価、リピート期待を計算する<br>
   <br>
@@ -130,7 +132,7 @@
 　　各指標を一覧表示する<br><br>
 
 - ここで確認すること<br>
-　カテゴリ判定は商品名から推定している<br>
+　カテゴリ判定は注文商品のproductIdをもとに行っている<br>
 　表示する指標は5種類である<br><br>
 
 - 参照ファイル<br>
