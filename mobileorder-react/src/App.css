@@ -765,8 +765,14 @@ label {
   color: #563768;
 }
 
+/* スマホ幅ではナビ全体が縦積みで画面の大半を占領してしまうため、
+   ハンバーガーメニューでトグル開閉するドロップダウンに変更する */
+.nav-toggle,
+.nav-backdrop {
+  display: none;
+}
+
 @media (max-width: 860px) {
-  .topbar,
   .nav,
   .actions,
   .admin-page-head,
@@ -777,6 +783,65 @@ label {
 
   .topbar {
     padding: 18px 20px;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 40px;
+    padding: 0;
+    color: #563768;
+    background: transparent;
+    font-size: 20px;
+  }
+
+  .nav-toggle:hover {
+    color: #7b2cbf;
+    background: #f4ddff;
+  }
+
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(45, 22, 61, 0.28);
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 6;
+    margin: 0;
+    padding: 16px 20px 20px;
+    border-bottom: 1px solid #e8dcf1;
+    background: #fdeff9;
+    backdrop-filter: blur(14px);
+  }
+
+  .nav.open {
+    display: flex;
+  }
+
+  .nav button {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .nav .login-status {
+    width: 100%;
+    min-width: 0;
+    text-align: left;
   }
 
   .login-layout,
