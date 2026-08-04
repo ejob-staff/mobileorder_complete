@@ -4,7 +4,7 @@
 - [構成の概要](#構成の概要)
 - [設定ファイルの作成](#設定ファイルの作成)
 - [DBを起動する](#DBを起動する)
-- [Spring Bootを起動する](#SpringBootを起動する)
+- [SpringBootを起動する](#SpringBootを起動する)
 - [Reactを起動する](#Reactを起動する)
 - [ローカルでの動作確認](#ローカルでの動作確認)
 - [Renderでのデプロイ](#Renderでのデプロイ)
@@ -20,22 +20,13 @@ DBはPostgreSQLを使って外部公開するまでの手順。
 - バックエンド: リポジトリ直下（`pom.xml`）→ **Render**（マネージドPostgres込み）
 - DB: **PostgreSQL**（旧MySQLから移行済み）
 - 認証: 既存のセッションCookie方式（Spring Security formLogin, JSESSIONID）のまま変更なし
-- クロスオリジン対策: Vercelの`rewrites`で`/api/*`をRenderのバックエンドにプロキシする。ブラウザからは常にVercelドメインへの同一オリジン通信に見えるため、CORS設定やSameSite=None Cookie対応は不要。フロントの`fetch('/api/...', { credentials: 'include' })`という既存コードも無改修で動く。
+- クロスオリジン対策: Vercelの`rewrites`で`/api/*`をRenderのバックエンドにプロキシする。<br>
+  ブラウザからは常にVercelドメインへの同一オリジン通信に見えるため、CORS設定やSameSite=None Cookie対応は不要。<br>
+- フロントの`fetch('/api/...', { credentials: 'include' })`という既存コードも無改修で動く。
 
 ## 設定ファイルの作成
 
 `.env.example`を参考に`.env`を作成する
-
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=mobileorder
-DB_USERNAME=mobileorderuser
-DB_CONTAINER_NAME=mobileorder-postgres
-DB_PASSWORD=任意のパスワード
-
-APP_PORT=8083
-```
 
 ## DBを起動する
 
@@ -84,25 +75,15 @@ npm run dev
 4. 環境変数を設定する（手順2で控えたPostgresの接続情報から）
     - `DB_HOST` `DB_PORT` `DB_NAME` `DB_USERNAME` `DB_PASSWORD`
     - `PORT`はRenderが自動で注入するので設定不要
+    - `system.properties`でJavaのバージョンをRenderに明示している。
 5. デプロイが完了したら発行される`https://<service名>.onrender.com`のURLを控える
-
-`system.properties`（`java.runtime.version=21`）でJavaのバージョンをRenderに明示している。（deployブランチで参照可能）
 
 ## Vercelでのデプロイ
 
 1. Vercelの公式サイトにサインアップし、同じGitHubリポジトリと連携してプロジェクトを作成する
 2. **Root Directory** を`mobileorder-react`に設定する
 3. Build/Output設定はデフォルト（`vite build` / `dist`）のままでよい
-4. `mobileorder-react/vercel.json`の`destination`を、手順6で控えたRenderのURLに書き換える（deployブランチで参照可能）
-
-```json
-{
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "https://<service名>.onrender.com/api/:path*" }
-  ]
-}
-```
-
+4. `mobileorder-react/vercel.json`の`destination`を、手順6で控えたRenderのURLに書き換える。
 5. コミット・プッシュしてVercelに再デプロイさせる
 6. デプロイ完了後、発行されたURLにアクセスする
 
