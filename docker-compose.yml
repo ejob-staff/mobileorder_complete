@@ -1,17 +1,16 @@
 services:
   db:
     container_name: ${DB_CONTAINER_NAME}
-    image: mysql:8.4
+    image: postgres:16
     volumes:
-      - database-volume:/var/lib/mysql
+      - database-volume:/var/lib/postgresql/data
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       TZ: Asia/Tokyo
     ports:
-      - "${DB_PORT}:3306"
+      - "${DB_PORT}:5432"
 
 volumes:
   database-volume:
