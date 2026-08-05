@@ -7,6 +7,7 @@
 - [SpringBootを起動する](#SpringBootを起動する)
 - [Reactを起動する](#Reactを起動する)
 - [ローカルでの動作確認](#ローカルでの動作確認)
+- [NeonでのDB作成](#NeonでのDB作成)
 - [Renderでのデプロイ](#Renderでのデプロイ)
 - [Vercelでのデプロイ](#Vercelでのデプロイ)
 - [本番環境で動作確認](#本番環境で動作確認)
@@ -16,9 +17,9 @@ DBはPostgreSQLを使って外部公開するまでの手順。
 
 ## 構成の概要
 
-- フロント: `mobileorder-react/` → **Vercel**
-- バックエンド: リポジトリ直下（`pom.xml`）→ **Render**（マネージドPostgres込み）
-- DB: **PostgreSQL**（旧MySQLから移行済み）
+- フロント: `mobileorder-react/` → **Vercel**（Hobby / 無料プラン）
+- バックエンド: リポジトリ直下（`pom.xml`）→ **Render**（Free Web Service）
+- DB: **PostgreSQL** → **Neon**（無料枠、Renderとは別サービス）。旧MySQLから移行済み
 - 認証: 既存のセッションCookie方式（Spring Security formLogin, JSESSIONID）のまま変更なし
 - クロスオリジン対策: Vercelの`rewrites`で`/api/*`をRenderのバックエンドにプロキシする。<br>
   ブラウザからは常にVercelドメインへの同一オリジン通信に見えるため、CORS設定やSameSite=None Cookie対応は不要。<br>
@@ -45,7 +46,6 @@ docker compose up -d
 
 ```
 cd mobileorder-react
-npm install
 npm run dev
 ```
 
@@ -64,32 +64,40 @@ npm run dev
 - [ ] （管理者）注文分析を確認できる
 - [ ] （管理者）ユーザー管理できる
 
+## NeonでのDB作成
+
+1. Neonの公式サイトにサインアップし、新規プロジェクト（Postgres）を作成する
+2. 発行される接続情報（ホスト・ポート・DB名・ユーザー名・パスワード）を控える
+    - NeonはSSL接続必須。`application.yml`の接続URLは`DB_SSLMODE`環境変数でsslmodeを切り替えられるようにしてある（ローカルは`prefer`、Renderでは`require`を設定する）
+
 ## Renderでのデプロイ
 
 1. Renderの公式サイトにサインアップし、このGitHubリポジトリと連携する
-2. **PostgreSQL** インスタンスを新規作成する。作成後に発行される接続情報（ホスト・ポート・DB名・ユーザー名・パスワード）を控える
-3. **Web Service** を新規作成し、リポジトリのルート（`pom.xml`がある場所）を指定する
+2. **Web Service** を新規作成し、リポジトリのルート（`pom.xml`がある場所）を指定する
     - ランタイム: **Native Java**（Dockerではない）
+    - Branch: **deploy**（Postgres対応やRender/Vercel向けの設定ファイルはdeployブランチにのみ存在する）
     - Build command: `./mvnw clean package -DskipTests`
     - Start command: `java -jar target/mobileorder_complete-0.0.1-SNAPSHOT.jar`
-4. 環境変数を設定する（手順2で控えたPostgresの接続情報から）
+    - Plan: **Free**
+3. 環境変数を設定する（Neonの接続情報から）
     - `DB_HOST` `DB_PORT` `DB_NAME` `DB_USERNAME` `DB_PASSWORD`
+    - `DB_SSLMODE=require`（NeonはSSL接続必須のため。ローカルの`prefer`のままだと接続できない）
     - `PORT`はRenderが自動で注入するので設定不要
-    - `system.properties`でJavaのバージョンをRenderに明示している。
-5. デプロイが完了したら発行される`https://<service名>.onrender.com`のURLを控える
+    - `system.properties`でJavaのバージョンをRenderに明示している
+4. デプロイが完了したら発行される`https://<service名>.onrender.com`のURLを控える
 
 ## Vercelでのデプロイ
 
 1. Vercelの公式サイトにサインアップし、同じGitHubリポジトリと連携してプロジェクトを作成する
 2. **Root Directory** を`mobileorder-react`に設定する
 3. Build/Output設定はデフォルト（`vite build` / `dist`）のままでよい
-4. `mobileorder-react/vercel.json`の`destination`を、手順6で控えたRenderのURLに書き換える。
+4. `mobileorder-react/vercel.json`の`destination`を、Renderでのデプロイの手順4で控えたURLに書き換える
 5. コミット・プッシュしてVercelに再デプロイさせる
 6. デプロイ完了後、発行されたURLにアクセスする
 
 ## 本番環境で動作確認
 
-手順5と同じチェックリストを、本番URL（Vercelのドメイン）上で確認する。
+「ローカルでの動作確認」と同じチェックリストを、本番URL（Vercelのドメイン）上で確認する。
 
 - [ ] ログインできる
 - [ ] 新規アカウント作成できる
