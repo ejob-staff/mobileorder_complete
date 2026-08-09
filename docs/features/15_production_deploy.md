@@ -74,10 +74,9 @@ npm run dev
 
 1. Renderの公式サイトにサインアップし、このGitHubリポジトリと連携する
 2. **Web Service** を新規作成し、リポジトリのルート（`pom.xml`がある場所）を指定する
-    - ランタイム: **Native Java**（Dockerではない）
+    - Language: **Docker**（RenderはJavaをネイティブ言語としてサポートしていないため、リポジトリ直下の`Dockerfile`を使ってビルド・実行する）
     - Branch: **deploy**（Postgres対応やRender/Vercel向けの設定ファイルはdeployブランチにのみ存在する）
-    - Build command: `./mvnw clean package -DskipTests`
-    - Start command: `java -jar target/mobileorder_complete-0.0.1-SNAPSHOT.jar`
+    - Build/Start command: 指定不要（`Dockerfile`の内容がそのまま使われる）
     - Plan: **Free**
 3. 環境変数を設定する（Neonの接続情報から）
     - `DB_HOST` `DB_PORT` `DB_NAME` `DB_USERNAME` `DB_PASSWORD`
