@@ -107,9 +107,10 @@ export default function AdminOrdersPage({ orders, onUpdateStatus, onConfirm }) {
     }
 
     onConfirm({
-      title: '注文状況を更新しますか？',
-      message: '注文したお客様にステータスが反映されますがよろしいですか？',
+      title: '注文ステータスの更新確認',
+      message: '注文ステータスを更新しますが、よろしいでしょうか。',
       confirmText: '更新する',
+      confirmVariant: 'danger',
       onConfirm: () => onUpdateStatus(order.id, form),
     })
   }
