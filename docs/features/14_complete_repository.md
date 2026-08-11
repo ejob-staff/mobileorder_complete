@@ -21,7 +21,7 @@
 
 - 主なファイル<br>
 　pom.xml -- Maven設定<br>
-　docker-compose.yml -- PostgreSQLコンテナ設定<br>
+　docker-compose.yml -- MySQLコンテナ設定<br>
 　.env.example -- 環境変数の例<br>
 　README.md -- リポジトリ概要<br>
 
@@ -41,7 +41,7 @@
 　Spring Security<br>
 　Spring Data JPA<br>
 　Validation<br>
-　PostgreSQL JDBC Driver<br>
+　MySQL Connector/J<br>
 　OpenJDK 21<br><br>
 
 - 参照ファイル<br>
