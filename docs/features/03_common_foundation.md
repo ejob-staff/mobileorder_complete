@@ -19,6 +19,7 @@
 - [エラーレスポンス共通化](#エラーレスポンス共通化)
 - [SpringSecurityの基本設定](#SpringSecurityの基本設定)
 - [共通部品](#共通部品)
+- [注意事項](#注意事項)
 
 ### 設計資料
 `docs/`<br>
@@ -501,3 +502,8 @@
   React側<br>
 　mobileorder-react/src/components/RatingStars.jsx<br>
 　mobileorder-react/src/components/ProductVisual.jsx<br>
+
+### 注意事項
+　練習問題は難しいと感じたら無理に解かず、飛ばして次に進んでいただいて問題ありません。<br>
+　エラーが発生した場合は変更前の状態に戻してから進めていただければ大丈夫です。<br>
+　14章で完成版のリポジトリを用意しておりますので、そちらの方で実装を確認して頂けますと幸いです。
