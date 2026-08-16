@@ -28,6 +28,7 @@ function App() {
   const location = useLocation()
   const route = location.pathname === '/' ? '/login' : location.pathname
   const [auth, setAuth] = useState(null)
+  const [authChecked, setAuthChecked] = useState(false)
   const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
   const [orders, setOrders] = useState([])
@@ -107,8 +108,9 @@ function App() {
     setManagementCodes(await apiRequest('/api/admin/user-management-codes'))
   }
 
+  {/*修正10: リロード時に認証確認が終わる前の一瞬ログイン画面が表示されてしまう問題を解消するため、authCheckedで確認完了を管理するようにした*/}
   useEffect(() => {
-    loadAuth().catch(() => setAuth(null))
+    loadAuth().catch(() => setAuth(null)).finally(() => setAuthChecked(true))
   }, [])
 
   useEffect(() => {
@@ -377,6 +379,10 @@ function App() {
       body: JSON.stringify(form),
     })
     setAccount(updated)
+  }
+
+  if (!authChecked) {
+    return null
   }
 
   if (!auth) {
