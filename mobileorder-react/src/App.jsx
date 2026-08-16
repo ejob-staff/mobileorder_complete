@@ -382,7 +382,11 @@ function App() {
   }
 
   if (!authChecked) {
-    return null
+    return (
+      <main className="container narrow">
+        <p className="empty">読み込み中です。</p>
+      </main>
+    )
   }
 
   if (!auth) {
