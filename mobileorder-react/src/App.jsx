@@ -383,7 +383,8 @@ function App() {
 
   if (!authChecked) {
     return (
-      <main className="container narrow">
+      <main className="container narrow loading-screen">
+        <span className="loading-spinner" />
         <p className="empty">読み込み中です。</p>
       </main>
     )
