@@ -78,8 +78,10 @@ npm run dev
     - Branch: **deploy**（Postgres対応やRender/Vercel向けの設定ファイルはdeployブランチにのみ存在する）
     - Build/Start command: 指定不要（`Dockerfile`の内容がそのまま使われる）
     - Plan: **Free**
-3. 環境変数を設定する（Neonの接続情報から）
-    - `DB_HOST` `DB_PORT` `DB_NAME` `DB_USERNAME` `DB_PASSWORD`
+3. 環境変数を設定する
+    - Renderの管理画面 - Environment - Environment Variablesで設定する
+    - Neonの接続情報から`APP_PORT` `DB_HOST` `DB_NAME` `DB_PASSWORD` `DB_PORT` `DB_SSLMODE` `DB_USERNAME`を設定する
+    - 上記は`application.yml`を確認しながら設定する
     - `DB_SSLMODE=require`（NeonはSSL接続必須のため。ローカルの`prefer`のままだと接続できない）
     - `PORT`はRenderが自動で注入するので設定不要
     - `system.properties`でJavaのバージョンをRenderに明示している
