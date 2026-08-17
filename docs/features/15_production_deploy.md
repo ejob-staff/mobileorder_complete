@@ -18,7 +18,7 @@ DBはPostgreSQLを使って外部公開するまでの手順。
 
 ## リポジトリをforkする
 
-そのため、デプロイを行う前に**まず自分のGitHubアカウントにFork**しておく。
+デプロイを行う前に**まず自分のGitHubアカウントに対象のリポジトリをfork**しておく。
 
 1. GitHubで`ejob-staff/mobileorder_complete`を開く
 2. 右上の **Fork** ボタンから自分のアカウントにコピーを作成する
